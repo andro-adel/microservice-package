@@ -1,8 +1,8 @@
 {
-    "name": "andro-adel/microservice-package",
+    "name": "dd/microservice-core",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
@@ -16,14 +16,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Andro\\MicroservicePackage\\": "src/"
+            "DD\\MicroserviceCore\\": "src/"
         },
         "files": ["src/Traits/ApiResponseTrait.php"]
 
     },
     "authors": [
         {
-            "name": "Andro Adel",
+            "name": "Developers And Designers",
             "email": "info@dd.sa"
         }
     ],

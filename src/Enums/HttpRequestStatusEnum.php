@@ -1,6 +1,6 @@
 <?php
 
-namespace Andro\MicroservicePackage\Enums;
+namespace DD\MicroserviceCore\Enums;
 
 enum HttpRequestStatusEnum: int
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Andro\MicroservicePackage\Traits;
+namespace DD\MicroserviceCore\Traits;
 
-use Andro\MicroservicePackage\Enums\HttpRequestStatusEnum;
+use DD\MicroserviceCore\Enums\HttpRequestStatusEnum;
 
 trait ApiResponseTrait
 {

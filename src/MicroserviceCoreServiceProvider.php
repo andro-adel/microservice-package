@@ -1,8 +1,8 @@
 <?php
 
-namespace Andro\MicroservicePackage;
+namespace DD\MicroserviceCore;
 
-class MicroservicePackageServiceProvider
+class MicroserviceCoreServiceProvider
 {
     public function boot()
     {
@@ -11,7 +11,7 @@ class MicroservicePackageServiceProvider
     public function register()
     {
         $this->loadTrait();
-        MicroservicePackage::setup();
+        MicroserviceCore::setup();
     }
 
     protected function loadTrait()
