@@ -2,7 +2,7 @@
     "name": "andro-adel/microservice-package",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
