@@ -17,7 +17,9 @@
     "autoload": {
         "psr-4": {
             "Andro\\MicroservicePackage\\": "src/"
-        }
+        },
+        "files": ["src/Traits/ApiResponseTrait.php"]
+
     },
     "authors": [
         {

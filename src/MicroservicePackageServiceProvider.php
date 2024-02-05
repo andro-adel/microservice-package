@@ -2,9 +2,21 @@
 
 namespace Andro\MicroservicePackage;
 
-class MicroservicePackage
+class MicroservicePackageServiceProvider
 {
-    public static function setup()
+    public function boot()
     {
     }
+
+    public function register()
+    {
+        $this->loadTrait();
+        MicroservicePackage::setup();
+    }
+
+    protected function loadTrait()
+    {
+        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Traits' . DIRECTORY_SEPARATOR . 'ApiResponseTrait.php';
+    }
+
 }
