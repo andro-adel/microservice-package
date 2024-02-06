@@ -9,7 +9,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../vendor/knuckleswtf/scribe/config/scribe.php' => $this->app->configPath('scribe.php'),
+            __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
         ]);
     }
 
