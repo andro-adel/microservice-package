@@ -2,7 +2,7 @@
     "name": "dd/microservice-core",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
@@ -37,7 +37,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Knuckles\\Scribe\\ScribeServiceProvider"
+                "DD\\MicroserviceCore\\MicroserviceCoreServiceProvider"
             ]
         }
     }
