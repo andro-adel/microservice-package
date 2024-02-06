@@ -2,7 +2,7 @@
     "name": "dd/microservice-core",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
