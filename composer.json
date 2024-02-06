@@ -2,7 +2,7 @@
     "name": "dd/microservice-core",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
@@ -35,8 +35,9 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "@php artisan vendor:publish --tag=scribe-config"
+        "post-package-install": [
+            "@php artisan vendor:publish --tag=scribe-config",
+            "echo test"
         ]
     }
 }
