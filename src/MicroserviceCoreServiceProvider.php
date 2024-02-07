@@ -20,6 +20,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     {
         $this->loadTrait();
         MicroserviceCore::setup();
+        $this->mergeConfigFrom(__DIR__ . '/../config/predis.php', 'database');
     }
 
     protected function loadTrait()
