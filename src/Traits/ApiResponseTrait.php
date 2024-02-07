@@ -11,7 +11,7 @@ trait ApiResponseTrait
         return [
             'success' => false,
             'type' => 'error',
-            'code' => $this->status_code_401,
+            'code' => HttpRequestStatusEnum::STATUS_UNAUTHORIZED,
             'reason' => 'Permissions',
             'message' => __('permission_denied'),
             'errors' => $errors,
