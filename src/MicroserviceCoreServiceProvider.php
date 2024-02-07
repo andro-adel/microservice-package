@@ -11,6 +11,9 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
         ], 'dd-scribe-config');
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/scribe.php', 'scribe'
+        );
     }
 
     public function register()
