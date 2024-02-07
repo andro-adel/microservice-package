@@ -13,14 +13,14 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
         ], 'dd-config');
         Artisan::call("vendor:publish --tag=dd-config --force");
-        $this->mergeConfigFrom(__DIR__ . '/../config/predis.php', 'database');
+        $this->mergeConfigFrom(__DIR__ . '/../config/database.php', 'database');
     }
 
     public function register()
     {
         $this->loadTrait();
         MicroserviceCore::setup();
-        $this->mergeConfigFrom(__DIR__ . '/../config/predis.php', 'database');
+        $this->mergeConfigFrom(__DIR__ . '/../config/database.php', 'database');
     }
 
     protected function loadTrait()
