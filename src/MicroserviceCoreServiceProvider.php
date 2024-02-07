@@ -2,6 +2,7 @@
 
 namespace DD\MicroserviceCore;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 
 class MicroserviceCoreServiceProvider extends ServiceProvider
@@ -10,19 +11,14 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
-        ], 'dd-scribe-config');
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/scribe.php', 'scribe'
-        );
+        ], 'dd-config');
+        Artisan::call("vendor:publish --tag=dd-config --force");
     }
 
     public function register()
     {
         $this->loadTrait();
         MicroserviceCore::setup();
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/scribe.php', 'scribe'
-        );
     }
 
     protected function loadTrait()
