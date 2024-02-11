@@ -17,7 +17,7 @@ This is a laravel package to be used with each microservice to setup main packag
 - [monolog/monolog ^3.5](https://github.com/Seldaek/monolog).
 - [open-telemetry/opentelemetry-logger-monolog ^1.0](https://github.com/opentelemetry-php/contrib-logger-monolog).
 - [predis/predis ^2.2](https://github.com/predis/predis).
-- [vladimir-yuldashev/laravel-queue-rabbitmq ^13.3](https://github.com/vyuldashev/laravel-queue-rabbitmq).
+- [vladimir-yuldashev/laravel-queue-rabbitmq ^13.3](https://github.com/vyuldashev/laravel-queue-rabbitmq) - [notion-documentation] (https://malleable-corn-f1b.notion.site/RabbitMQ-Installation-f74ae9ffdded481281e42d6e674fa516).
 - [knuckleswtf/scribe ^4.29](https://scribe.knuckles.wtf/laravel/).
 - [phpunit/phpunit ^10.5](https://github.com/sebastianbergmann/phpunit).
 
@@ -25,5 +25,4 @@ This is a laravel package to be used with each microservice to setup main packag
 
 You can install the package via composer:
 
-    composer require andro-adel/microservice-package
-
+    composer require andro-adel/microservice-package -W

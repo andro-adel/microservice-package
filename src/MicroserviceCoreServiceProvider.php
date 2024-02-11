@@ -10,17 +10,18 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
+            __DIR__ . '/../config/ddconfig.php' => $this->app->configPath('ddconfig.php'),
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
-            __DIR__ . '/../config/predis.php' => $this->app->configPath('predis.php'),
         ], 'dd-config');
         Artisan::call("vendor:publish --tag=dd-config --force");
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/predis.php', 'database.redis');
+        $ddConfig = require __DIR__ . '/../config/ddconfig.php';
         config([
-            'logging.channels' => require(__DIR__ . '/../config/monolog.php'),
+            'logging.channels' => $ddConfig['logging.channels'],
+            'database.redis' => $ddConfig['database.redis'],
         ]);
         $this->loadTrait();
         MicroserviceCore::setup();
