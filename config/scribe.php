@@ -9,18 +9,21 @@ return [
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => '',
 
-    // The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url') at generation time.
-    // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
+    // The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url') at
+    //  generation time. If you're using `laravel` type, you can set this to a dynamic string, like
+    // '{{ config("app.tenant_url") }}' to get a dynamic base URL.
     'base_url' => null,
 
     'routes' => [
         [
             // Routes that match these conditions will be included in the docs
             'match' => [
-                // Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
+                // Match only routes whose paths match this pattern (use * as a wildcard to match any characters).
+                // Example: 'users/*'.
                 'prefixes' => ['api/*'],
 
-                // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
+                // Match only routes whose domains match this pattern (use * as a wildcard to match any characters).
+                // Example: 'api.*'.
                 'domains' => ['*'],
 
                 // [Dingo router only] Match only routes registered under this version. Wildcards are NOT supported.
@@ -61,7 +64,8 @@ return [
         'add_routes' => true,
 
         // URL path to use for the docs endpoint (if `add_routes` is true).
-        // By default, `/docs` opens the HTML page, `/docs.postman` opens the Postman collection, and `/docs.openapi` the OpenAPI spec.
+        // By default, `/docs` opens the HTML page, `/docs.postman` opens the Postman collection, and `/docs.openapi`
+        // the OpenAPI spec.
         'docs_url' => '/docs',
 
         // Directory within `public` in which to store CSS and JS assets.
@@ -93,13 +97,15 @@ return [
         'csrf_url' => '/sanctum/csrf-cookie',
     ],
 
-    // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
+    // How is your API authenticated? This information will be used in the displayed docs, generated examples and
+    // response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
         'enabled' => false,
 
-        // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
-        // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
+        // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above)
+        // to true. You can then use @unauthenticated or @authenticated on individual endpoints to change their status
+        // from the default.
         'default' => false,
 
         // Where is the auth value meant to be sent in a request?
@@ -118,15 +124,17 @@ return [
         'placeholder' => '{YOUR_AUTH_KEY}',
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' =>
+            'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
     ],
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<INTRO
 This documentation aims to provide all the information you need to work with our API.
 
-<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
-You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark
+ area to the right (or as part of the content on mobile). You can switch the language used with the tabs at the top
+ right (or from the nav menu at the top left on mobile).</aside>
 INTRO
     ,
 
@@ -168,7 +176,8 @@ INTRO
 
         // By default, Scribe will sort groups alphabetically, and endpoints in the order their routes are defined.
         // You can override this by listing the groups, subgroups and endpoints here in the order you want them.
-        // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and https://scribe.knuckles.wtf/laravel/reference/config#order for details
+        // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and
+        // https://scribe.knuckles.wtf/laravel/reference/config#order for details
         'order' => [],
     ],
 
@@ -252,7 +261,8 @@ INTRO
 
     // For response calls, API resource responses and transformer responses,
     // Scribe will try to start database transactions, so no changes are persisted to your database.
-    // Tell Scribe which connections should be transacted here. If you only use one db connection, you can leave this as is.
+    // Tell Scribe which connections should be transacted here. If you only use one db connection, you can leave this
+    // as is.
     'database_connections_to_transact' => [config('database.default')],
 
     'fractal' => [

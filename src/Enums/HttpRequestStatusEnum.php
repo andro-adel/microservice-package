@@ -21,7 +21,7 @@ enum HttpRequestStatusEnum: int
     case STATUS_FORBIDDEN = 403; // Forbidden
     case STATUS_NOT_FOUND = 404; // Not Found
     case STATUS_CONFLICT = 409; // Not Found
-    case STATUS_Validation_Error = 422; // Not Found
+    case STATUS_VALIDATIONS_ERROR = 422; // Not Found
     case STATUS_TO_MANY_REQUESTS = 429; // Internal Server Error
     // Server Error (5XX)
     case STATUS_SERVER_ERROR = 500; // Internal Server Error

@@ -3,297 +3,241 @@
 namespace DD\MicroserviceCore\Traits;
 
 use DD\MicroserviceCore\Enums\HttpRequestStatusEnum;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 trait ApiResponseTrait
 {
-    public function failPermissionMessage($errors)
+    /**
+     * base response function
+     * @param $data
+     * @param HttpRequestStatusEnum $status
+     * @return JsonResponse
+     */
+    private function response($data, HttpRequestStatusEnum $status): JsonResponse
     {
-        return [
+        $data['code'] = $status->value;
+        return response()->json($data, $status->value);
+    }
+
+    /**
+     * default success response
+     * @param $data
+     * @param string $reason
+     * @param string|null $message
+     * @param array $additionData
+     * @param HttpRequestStatusEnum $status
+     * @return JsonResponse
+     */
+    public function successResponse($data, string $reason, string|null $message = null, array $additionData = [],
+                                    HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_OK): JsonResponse
+    {
+        return $this->response([
+            'success' => true,
+            'type' => 'success',
+            'data' => $data,
+            'reason' => $reason,
+            'message' => $message ?? __('resource_details'),
+            ...$additionData
+        ], $status);
+    }
+
+    /**
+     * success response without content
+     * @return JsonResponse
+     */
+    public function successNoContentResponse(): JsonResponse
+    {
+        return $this->response([], HttpRequestStatusEnum::STATUS_SUCCESS_WITH_NO_CONTENT);
+    }
+
+    /**
+     * resource not modified response
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function notModifiedResponse(string|null $message = null, array $additionData = []): JsonResponse
+    {
+        return $this->response([
             'success' => false,
             'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_UNAUTHORIZED,
+            'reason' => 'Failure',
+            'message' => $message ?? (__('default_resource_name') . ' ' . __('not_modified')),
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_NOT_MODIFIED);
+    }
+
+    /**
+     * bad request response
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function badRequestResponse(string|null $message = null, array $additionData = []): JsonResponse
+    {
+        return $this->response([
+            'success' => false,
+            'type' => 'error',
+            'reason' => 'General',
+            'message' => $message,
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_BAD_REQUEST);
+    }
+
+    /**
+     * un authorized response for permission issues
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function unauthorizedResponse(string|null $message = null, array $additionData = []): JsonResponse
+    {
+        return $this->response([
+            'success' => false,
+            'type' => 'error',
             'reason' => 'Permissions',
-            'message' => __('permission_denied'),
-            'errors' => $errors,
-        ];
+            'message' => $message ?? __('permission_denied'),
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_UNAUTHORIZED);
     }
 
-    public function failExceptionMessage($error_code, $file, $line, $message)
+    /**
+     * unauthenticated response for invalid auth data
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function unauthenticatedResponse(string|null $message = null, array $additionData = []): JsonResponse
     {
-        $data = [
+        return $this->response([
             'success' => false,
             'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_SERVER_ERROR->value,
-            'reason' => 'Exceptions',
-            'message' => $message,
-            'error_code' => $error_code,
-            'file' => $file,
-            'line' => $line,
-        ];
-        if (is_array($message))
-            info(implode(', ', $message));
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_BAD_REQUEST->value);
-    }
-
-    public function failResourceNotFoundMessage($resource_name = null, $message = null)
-    {
-        $data = [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_NOT_FOUND->value,
-            'reason' => 'Record',
-            'message' => empty($message) ? (is_null($resource_name)) ? __('Resource_not_found') : $resource_name . ' ' . __('not_found') : $message,
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_NOT_FOUND->value);
-    }
-
-    public function successShowDataResponse($data = [], $reason = 'Show', $message = null)
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'data' => $data,
-            'reason' => $reason,
-            'message' => $message ?? __('resource_details'),
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function successShowPaginationResponse($data, $meta, $reason = 'Show')
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'data' => $data,
-            'meta' => $meta,
-            'reason' => $reason,
-            'message' => __('resource_details'),
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function successShowPaginatedDataResponse(JsonResource $data, $reason = 'Show')
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'data' => $data,
-            'count' => $data->count(),
-            'reason' => $reason,
-            'message' => __('messages.resource_details'),
-        ];
-        return response()->json($data, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function successShowMessage($message = null)
-    {
-        return [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'reason' => 'Show',
-            'message' => $message ?? __('resource_details'),
-        ];
-    }
-
-    public function successUnauthenticatedMessage($message = null)
-    {
-        return [
-            'success' => false,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'reason' => 'Show',
+            'reason' => 'Unauthenticated',
             'message' => $message ?? __('unauthenticated'),
-        ];
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_FORBIDDEN);
     }
 
-    public function successListMessage($data, $message = null)
+    /**
+     * not found resource response
+     * @param string|null $resource_name
+     * @param array $additionData
+     * @param string|null $message
+     * @return JsonResponse
+     */
+    public function notFoundResponse(string|null $resource_name = null, array $additionData = [],
+                                     string|null $message = null): JsonResponse
     {
-        $body = [
-            'success' => true,
-            'type' => 'success',
-            'reason' => 'List',
-            'data' => $data,
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'message' => $message ?? __('resources_listed_successfully'),
-        ];
-
-        return response()->json($body, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function successCreateMessage($data = null, ?string $message = null)
-    {
-        return [
-            'success' => true,
-            'type' => 'success',
-            'data' => $data,
-            'code' => HttpRequestStatusEnum::STATUS_CREATED->value,
-            'reason' => 'Create',
-            'message' => $message ?? __('resource_created_successfully'),
-        ];
-    }
-
-    public function failCreateMessage()
-    {
-        return [
+        return $this->response([
             'success' => false,
             'type' => 'error',
-            'code' => $this->status_code_304,
-            'reason' => 'Failure',
-            'message' => __('resource_not_created_successfully'),
-        ];
+            'reason' => 'Not Found',
+            'message' => $message ?? (($resource_name ?? __('default_resource_name')) . ' ' . __('not_found')),
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_NOT_FOUND);
     }
 
-    public function successUpdateNoContentResponse()
+    /**
+     * conflict response
+     * @param string $type
+     * @param array $data
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function conflictsResponse(string $type, array $data, string|null $message = null, array $additionData = [])
+    : JsonResponse
     {
-        return response()->json([], HttpRequestStatusEnum::STATUS_SUCCESS_WITH_NO_CONTENT->value);
-    }
-
-    public function successUpdateWithContentResponse($data, $message = null)
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'reason' => 'Update',
-            'data' => $data,
-            'message' => $message ?? __('resource_updated_successfully'),
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function failUpdateMessage()
-    {
-        return [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_NOT_MODIFIED->value,
-            'reason' => 'Failure',
-            'message' => __('resource_not_updated'),
-        ];
-    }
-
-    public function failUpdateWithDataMessage($data)
-    {
-        $response = [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_NOT_MODIFIED->value,
-            'reason' => 'Failure',
-            'data' => $data,
-            'message' => __('resource_not_updated'),
-        ];
-
-        return response()->json($response, HttpRequestStatusEnum::STATUS_NOT_MODIFIED->value);
-    }
-
-    public function successDeleteMessage($message = null)
-    {
-        return [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'reason' => 'Delete',
-            'message' => $message ?? __('resource_deleted_successfully'),
-        ];
-    }
-
-    public function failDeleteMessage()
-    {
-        return [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_NOT_MODIFIED->value,
-            'reason' => 'Failure',
-            'message' => __('resource_not_deleted'),
-        ];
-    }
-
-    public function failValidationMessage($errors, $message = null)
-    {
-        $data = [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_Validation_Error->value,
-            'reason' => 'Validation',
-            'message' => $message ?? __('inputs_not_valid'),
-            'errors' => $errors,
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_Validation_Error->value);
-    }
-
-    public function failAuthMessage($message = null)
-    {
-        $data = [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_UNAUTHORIZED->value,
-            'reason' => 'Authentication',
-            'message' => $message ?? __('unauthenticated'),
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_UNAUTHORIZED->value);
-    }
-
-    public function successGeneralMessage($message = '')
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_OK->value,
-            'reason' => 'General',
-            'message' => $message,
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_OK->value);
-    }
-
-    public function failGeneralMessage($message = '')
-    {
-        $data = [
-            'success' => false,
-            'type' => 'error',
-            'code' => HttpRequestStatusEnum::STATUS_BAD_REQUEST,
-            'reason' => 'General',
-            'message' => $message,
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_BAD_REQUEST->value);
-    }
-
-    public function successًwithActionMessage($message = '')
-    {
-        $data = [
-            'success' => true,
-            'type' => 'success',
-            'code' => HttpRequestStatusEnum::STATUS_HTTP_FOUND->value,
-            'reason' => 'General',
-            'message' => $message,
-        ];
-
-        return response()->json($data, HttpRequestStatusEnum::STATUS_HTTP_FOUND->value);
-    }
-
-    public function failConflictsMessage(string $type, array $data)
-    {
-        $data = [
+        return $this->response([
             'success' => false,
             'type' => $type,
             'data' => $data,
-            'code' => HttpRequestStatusEnum::STATUS_CONFLICT->value,
             'reason' => 'Failure',
-            'message' => __('resource_conflicts'),
-        ];
+            'message' => $message ?? (__('default_resource_name') . ' ' . __('resource_conflicts')),
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_CONFLICT);
+    }
 
-        return response()->json($data, HttpRequestStatusEnum::STATUS_CONFLICT->value);
+    /**
+     * not valid response for validation issues
+     * @param array $errors
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function notValidResponse(array $errors, string|null $message = null, array $additionData = []): JsonResponse
+    {
+        return $this->response([
+            'success' => false,
+            'type' => 'error',
+            'reason' => 'Validation',
+            'message' => $message ?? __('inputs_not_valid'),
+            'errors' => $errors,
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_VALIDATIONS_ERROR);
+    }
+
+    /**
+     * server error response
+     * @param string|int $error_code
+     * @param string $file
+     * @param string|int $line
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public function serverErrorResponse(string|int $error_code, string $file, string|int $line,
+                                        string|null $message = null, array $additionData = []): JsonResponse
+    {
+        return $this->response([
+            'success' => false,
+            'type' => 'error',
+            'reason' => 'Exceptions',
+            'message' => $message ?? __('server_error'),
+            'error_code' => $error_code,
+            'file' => $file,
+            'line' => $line,
+            ...$additionData
+        ], HttpRequestStatusEnum::STATUS_SERVER_ERROR);
+    }
+
+    /**
+     * pagination response
+     * @param $data
+     * @param $meta
+     * @param string $reason
+     * @return JsonResponse
+     */
+    public function successShowPaginationResponse($data, $meta, string $reason = 'Show'): JsonResponse
+    {
+        return $this->successResponse($data, $reason, null, [
+            'meta' => $meta,
+        ]);
+    }
+
+    /**
+     * pagination full response
+     * @param JsonResource $data
+     * @param string $reason
+     * @return JsonResponse
+     */
+    public function successShowPaginatedDataResponse(JsonResource $data, string $reason = 'Show'): JsonResponse
+    {
+        return $this->successResponse($data, $reason, null, [
+            'count' => $data->count(),
+        ]);
+    }
+
+    /**
+     * created successfully response
+     * @param $data
+     * @param string|null $message
+     * @return JsonResponse
+     */
+    public function createdSuccessfullyResponse($data = null, ?string $message = null): JsonResponse
+    {
+        return $this->successResponse($data, 'Create',
+            $message ?? __('resource_created_successfully'), [], HttpRequestStatusEnum::STATUS_CREATED);
     }
 }
