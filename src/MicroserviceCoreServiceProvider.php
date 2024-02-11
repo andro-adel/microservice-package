@@ -19,6 +19,9 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/predis.php', 'database.redis');
+        config([
+            'logging.channels' => require(__DIR__ . '/../config/monolog.php'),
+        ]);
         $this->loadTrait();
         MicroserviceCore::setup();
     }
@@ -27,5 +30,4 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     {
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Traits' . DIRECTORY_SEPARATOR . 'ApiResponseTrait.php';
     }
-
 }
