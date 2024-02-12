@@ -37,7 +37,7 @@ trait ApiResponseTrait
             'type' => 'success',
             'data' => $data,
             'reason' => $reason,
-            'message' => $message ?? __('resource_details'),
+            'message' => $message ?? __('response_messages.success_message'),
             ...$additionData
         ], $status);
     }
@@ -57,13 +57,16 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function notModifiedResponse(string|null $message = null, array $additionData = []): JsonResponse
+    public function notModifiedResponse(string|null $resourceName = null, string|null $message = null,
+                                        array $additionData = []): JsonResponse
     {
         return $this->response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Failure',
-            'message' => $message ?? (__('default_resource_name') . ' ' . __('not_modified')),
+            'message' => $message ??
+                (($resourceName ?? __('response_messages.default_resource_name'))
+                    . ' ' . __('response_messages.not_modified')),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_NOT_MODIFIED);
     }
@@ -74,7 +77,9 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function badRequestResponse(string|null $message = null, array $additionData = []): JsonResponse
+    public function badRequestResponse(string|null $message = null, array $additionData = [],
+                                       HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_BAD_REQUEST)
+    : JsonResponse
     {
         return $this->response([
             'success' => false,
@@ -82,7 +87,7 @@ trait ApiResponseTrait
             'reason' => 'General',
             'message' => $message,
             ...$additionData
-        ], HttpRequestStatusEnum::STATUS_BAD_REQUEST);
+        ], $status);
     }
 
     /**
@@ -97,7 +102,7 @@ trait ApiResponseTrait
             'success' => false,
             'type' => 'error',
             'reason' => 'Permissions',
-            'message' => $message ?? __('permission_denied'),
+            'message' => $message ?? __('response_messages.permission_denied'),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_UNAUTHORIZED);
     }
@@ -114,26 +119,28 @@ trait ApiResponseTrait
             'success' => false,
             'type' => 'error',
             'reason' => 'Unauthenticated',
-            'message' => $message ?? __('unauthenticated'),
+            'message' => $message ?? __('response_messages.unauthenticated'),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_FORBIDDEN);
     }
 
     /**
      * not found resource response
-     * @param string|null $resource_name
+     * @param string|null $resourceName
      * @param array $additionData
      * @param string|null $message
      * @return JsonResponse
      */
-    public function notFoundResponse(string|null $resource_name = null, array $additionData = [],
-                                     string|null $message = null): JsonResponse
+    public function notFoundResponse(string|null $resourceName = null, string|null $message = null,
+                                     array $additionData = []): JsonResponse
     {
         return $this->response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Not Found',
-            'message' => $message ?? (($resource_name ?? __('default_resource_name')) . ' ' . __('not_found')),
+            'message' => $message ??
+                (($resourceName ?? __('response_messages.default_resource_name'))
+                    . ' ' . __('response_messages.not_found')),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_NOT_FOUND);
     }
@@ -146,7 +153,8 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function conflictsResponse(string $type, array $data, string|null $message = null, array $additionData = [])
+    public function conflictsResponse(string $type, array $data, string|null $resourceName = null,
+                                      string|null $message = null, array $additionData = [])
     : JsonResponse
     {
         return $this->response([
@@ -154,7 +162,9 @@ trait ApiResponseTrait
             'type' => $type,
             'data' => $data,
             'reason' => 'Failure',
-            'message' => $message ?? (__('default_resource_name') . ' ' . __('resource_conflicts')),
+            'message' => $message ??
+                (($resourceName ?? __('response_messages.default_resource_name'))
+                    . ' ' . __('response_messages.has_conflicts')),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_CONFLICT);
     }
@@ -172,7 +182,7 @@ trait ApiResponseTrait
             'success' => false,
             'type' => 'error',
             'reason' => 'Validation',
-            'message' => $message ?? __('inputs_not_valid'),
+            'message' => $message ?? __('response_messages.inputs_not_valid'),
             'errors' => $errors,
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_VALIDATIONS_ERROR);
@@ -194,7 +204,7 @@ trait ApiResponseTrait
             'success' => false,
             'type' => 'error',
             'reason' => 'Exceptions',
-            'message' => $message ?? __('server_error'),
+            'message' => $message ?? __('response_messages.server_error'),
             'error_code' => $error_code,
             'file' => $file,
             'line' => $line,
@@ -235,9 +245,13 @@ trait ApiResponseTrait
      * @param string|null $message
      * @return JsonResponse
      */
-    public function createdSuccessfullyResponse($data = null, ?string $message = null): JsonResponse
+    public function createdSuccessfullyResponse($data = null, string|null $resourceName = null,
+                                                ?string $message = null): JsonResponse
     {
+        $message = $message ??
+            (($resourceName ?? __('response_messages.default_resource_name'))
+                . ' ' . __('response_messages.created_successfully'));
         return $this->successResponse($data, 'Create',
-            $message ?? __('resource_created_successfully'), [], HttpRequestStatusEnum::STATUS_CREATED);
+            $message, [], HttpRequestStatusEnum::STATUS_CREATED);
     }
 }
