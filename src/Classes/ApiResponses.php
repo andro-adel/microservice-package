@@ -1,12 +1,12 @@
 <?php
 
-namespace DD\MicroserviceCore\Traits;
+namespace DD\MicroserviceCore\Classes;
 
 use DD\MicroserviceCore\Enums\HttpRequestStatusEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-trait ApiResponseTrait
+class ApiResponses
 {
     /**
      * base response function
@@ -14,7 +14,7 @@ trait ApiResponseTrait
      * @param HttpRequestStatusEnum $status
      * @return JsonResponse
      */
-    private function response($data, HttpRequestStatusEnum $status): JsonResponse
+    private static function response($data, HttpRequestStatusEnum $status): JsonResponse
     {
         $data['code'] = $status->value;
         return response()->json($data, $status->value);
@@ -22,17 +22,19 @@ trait ApiResponseTrait
 
     /**
      * default success response
-     * @param $data
+     * @param array $data
      * @param string $reason
      * @param string|null $message
      * @param array $additionData
      * @param HttpRequestStatusEnum $status
      * @return JsonResponse
      */
-    public function successResponse($data, string $reason, string|null $message = null, array $additionData = [],
-                                    HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_OK): JsonResponse
+    public static function successResponse(array $data, string $reason, string|null $message = null,
+                                           array $additionData = [],
+                                           HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_OK)
+    : JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => true,
             'type' => 'success',
             'data' => $data,
@@ -46,9 +48,9 @@ trait ApiResponseTrait
      * success response without content
      * @return JsonResponse
      */
-    public function successNoContentResponse(): JsonResponse
+    public static function successNoContentResponse(): JsonResponse
     {
-        return $this->response([], HttpRequestStatusEnum::STATUS_SUCCESS_WITH_NO_CONTENT);
+        return self::response([], HttpRequestStatusEnum::STATUS_SUCCESS_WITH_NO_CONTENT);
     }
 
     /**
@@ -57,10 +59,10 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function notModifiedResponse(string|null $resourceName = null, string|null $message = null,
+    public static function notModifiedResponse(string|null $resourceName = null, string|null $message = null,
                                         array $additionData = []): JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Failure',
@@ -77,11 +79,11 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function badRequestResponse(string|null $message = null, array $additionData = [],
+    public static function badRequestResponse(string|null $message = null, array $additionData = [],
                                        HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_BAD_REQUEST)
     : JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'General',
@@ -96,9 +98,9 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function unauthorizedResponse(string|null $message = null, array $additionData = []): JsonResponse
+    public static function unauthorizedResponse(string|null $message = null, array $additionData = []): JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Permissions',
@@ -113,9 +115,9 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function unauthenticatedResponse(string|null $message = null, array $additionData = []): JsonResponse
+    public static function unauthenticatedResponse(string|null $message = null, array $additionData = []): JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Unauthenticated',
@@ -131,10 +133,10 @@ trait ApiResponseTrait
      * @param string|null $message
      * @return JsonResponse
      */
-    public function notFoundResponse(string|null $resourceName = null, string|null $message = null,
+    public static function notFoundResponse(string|null $resourceName = null, string|null $message = null,
                                      array $additionData = []): JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Not Found',
@@ -153,11 +155,11 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function conflictsResponse(string $type, array $data, string|null $resourceName = null,
+    public static function conflictsResponse(string $type, array $data, string|null $resourceName = null,
                                       string|null $message = null, array $additionData = [])
     : JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => $type,
             'data' => $data,
@@ -176,9 +178,10 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function notValidResponse(array $errors, string|null $message = null, array $additionData = []): JsonResponse
+    public static function notValidResponse(array $errors, string|null $message = null, array $additionData = [])
+    : JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Validation',
@@ -197,10 +200,10 @@ trait ApiResponseTrait
      * @param array $additionData
      * @return JsonResponse
      */
-    public function serverErrorResponse(string|int $error_code, string $file, string|int $line,
+    public static function serverErrorResponse(string|int $error_code, string $file, string|int $line,
                                         string|null $message = null, array $additionData = []): JsonResponse
     {
-        return $this->response([
+        return self::response([
             'success' => false,
             'type' => 'error',
             'reason' => 'Exceptions',
@@ -219,9 +222,9 @@ trait ApiResponseTrait
      * @param string $reason
      * @return JsonResponse
      */
-    public function successShowPaginationResponse($data, $meta, string $reason = 'Show'): JsonResponse
+    public static function successShowPaginationResponse($data, $meta, string $reason = 'Show'): JsonResponse
     {
-        return $this->successResponse($data, $reason, null, [
+        return self::successResponse($data, $reason, null, [
             'meta' => $meta,
         ]);
     }
@@ -232,9 +235,9 @@ trait ApiResponseTrait
      * @param string $reason
      * @return JsonResponse
      */
-    public function successShowPaginatedDataResponse(JsonResource $data, string $reason = 'Show'): JsonResponse
+    public static function successShowPaginatedDataResponse(JsonResource $data, string $reason = 'Show'): JsonResponse
     {
-        return $this->successResponse($data, $reason, null, [
+        return self::successResponse($data, $reason, null, [
             'count' => $data->count(),
         ]);
     }
@@ -245,13 +248,13 @@ trait ApiResponseTrait
      * @param string|null $message
      * @return JsonResponse
      */
-    public function createdSuccessfullyResponse($data = null, string|null $resourceName = null,
+    public static function createdSuccessfullyResponse($data = null, string|null $resourceName = null,
                                                 ?string $message = null): JsonResponse
     {
         $message = $message ??
             (($resourceName ?? __('response_messages.default_resource_name'))
                 . ' ' . __('response_messages.created_successfully'));
-        return $this->successResponse($data, 'Create',
+        return self::successResponse($data, 'Create',
             $message, [], HttpRequestStatusEnum::STATUS_CREATED);
     }
 }

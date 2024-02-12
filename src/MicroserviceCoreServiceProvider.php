@@ -34,6 +34,6 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
 
     protected function loadTrait()
     {
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Traits' . DIRECTORY_SEPARATOR . 'ApiResponseTrait.php';
+        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'ApiResponseTrait.php';
     }
 }
