@@ -6,7 +6,7 @@ return [
     'logging.channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'loki'],
+            'channels' => ['single'],
             'ignore_exceptions' => false,
         ],
 
