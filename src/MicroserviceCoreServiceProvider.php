@@ -28,12 +28,6 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             'logging.channels' => $ddConfig['logging.channels'],
             'database.redis' => $ddConfig['database.redis'],
         ]);
-        $this->loadTrait();
         MicroserviceCore::setup();
-    }
-
-    protected function loadTrait()
-    {
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'Classes' . DIRECTORY_SEPARATOR . 'ApiResponseTrait.php';
     }
 }
