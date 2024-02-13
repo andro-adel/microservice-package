@@ -10,7 +10,8 @@
         "open-telemetry/opentelemetry-logger-monolog": "^1.0",
         "predis/predis": "^2.2",
         "vladimir-yuldashev/laravel-queue-rabbitmq": "^13.3",
-        "knuckleswtf/scribe": "^4.29"
+        "knuckleswtf/scribe": "^4.29",
+        "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"

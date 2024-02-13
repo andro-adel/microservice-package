@@ -11,6 +11,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/ddconfig.php' => $this->app->configPath('ddconfig.php'),
+            __DIR__ . '/../config/excel.php' => $this->app->configPath('excel.php'),
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
         ], 'dd-config');
         Artisan::call("vendor:publish --tag=dd-config --force");
