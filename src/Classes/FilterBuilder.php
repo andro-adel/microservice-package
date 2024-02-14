@@ -9,12 +9,12 @@ use Illuminate\Support\Collection;
 
 class FilterBuilder
 {
-    protected array $filtersObject;
+    protected array $filtersObject = [];
 
     /**
-     * @param array $filtersData
+     * @param array|null $filtersData
      */
-    public function __construct(protected array $filtersData = [])
+    public function __construct(protected array|null $filtersData = null)
     {
         if (!$this->filtersData) {
             $filtersRequest = request()->has('filter') ? request()->get('filter') : [];
@@ -72,15 +72,14 @@ class FilterBuilder
      * @return void
      */
     protected function applyingWhereFunction(array $filters, Relation|Builder|Collection &$collection,
-                                             bool $isCollection)
-    : void
+                                             bool $isCollection): void
     {
         foreach ($filters as $filter)
         {
             if ($isCollection) {
                 $collection = $collection->filter($filter);
             } else {
-                $collection = $filter($collection);
+                $collection = $collection->where($filter);
             }
         }
     }
@@ -101,6 +100,15 @@ class FilterBuilder
         foreach ($filters as $filter) {
             $collection = $collection->$filterType(...$filter);
         }
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    protected function canNotAddFilter(string $key): bool
+    {
+        return !isset($this->filtersData[$key]);
     }
 
     /**

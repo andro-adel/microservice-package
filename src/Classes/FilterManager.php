@@ -20,22 +20,21 @@ class FilterManager extends FilterBuilder
 
     /**
      * @param Relation|Builder|Collection|array $data
-     * @return Relation|Builder|Collection|array
+     * @return void
      */
-    public function applyFilters(Relation|Builder|Collection|array $data): Relation|Builder|Collection|array
+    public function applyFilters(Relation|Builder|Collection|array &$data): void
     {
         $isArray = is_array($data);
         $isCollection = !($data instanceof Relation || $data instanceof Builder);
-        $collection = $isArray ? collect($data) : $data;
+        $data = $isArray ? collect($data) : $data;
 
-        $this->applyingAllFilters($collection, $isCollection);
+        $this->applyingAllFilters($data, $isCollection);
         if ($isCollection || $isArray) {
-            $collection = array_values($collection->toArray());
+            $data = array_values($data->toArray());
             if ($isCollection) {
-                $collection = collect($collection);
+                $data = collect($data);
             }
         }
-        return $collection;
     }
 
     /**
@@ -46,8 +45,12 @@ class FilterManager extends FilterBuilder
      */
     public function addWhereFilter(string $column, string $operator = '=', string|null $valueKey = null): void
     {
+        $filterKey = $valueKey ?? $column;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('where', [$column, $operator,
-            ...($this->filtersData[$valueKey ?? $column]? [$this->filtersData[$valueKey ?? $column]] : [])]);
+            ...($this->filtersData[$valueKey ?? $column]? [$this->filtersData[$filterKey]] : [])]);
     }
 
     /**
@@ -65,6 +68,10 @@ class FilterManager extends FilterBuilder
                 $column = $index;
                 $valueKey = $value;
             }
+            $filterKey = $valueKey ?? $column;
+            if ($this->canNotAddFilter($filterKey)) {
+                continue;
+            }
             $this->addWhereFilter($column, $operator, $valueKey);
         }
     }
@@ -76,6 +83,10 @@ class FilterManager extends FilterBuilder
      */
     public function addWhereInFilter(string $column, string|null $valuesKey = null): void
     {
+        $filterKey = $valuesKey ?? $column;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('whereIn', [$column, $this->filtersData[$valuesKey ?? $column]]);
     }
 
@@ -93,6 +104,10 @@ class FilterManager extends FilterBuilder
                 $column = $index;
                 $valuesKey = $value;
             }
+            $filterKey = $valuesKey ?? $column;
+            if ($this->canNotAddFilter($filterKey)) {
+                continue;
+            }
             $this->addWhereInFilter($column, $valuesKey);
         }
     }
@@ -104,6 +119,10 @@ class FilterManager extends FilterBuilder
      */
     public function addWhereNotInFilter(string $column, string|null $valuesKeys = null): void
     {
+        $filterKey = $valuesKeys ?? $column;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('whereNotIn', [$column, $this->filtersData[$valuesKeys ?? $column]]);
     }
 
@@ -121,6 +140,10 @@ class FilterManager extends FilterBuilder
                 $column = $index;
                 $valuesKey = $value;
             }
+            $filterKey = $valuesKey ?? $column;
+            if ($this->canNotAddFilter($filterKey)) {
+                continue;
+            }
             $this->addWhereNotInFilter($column, $valuesKey);
         }
     }
@@ -128,17 +151,30 @@ class FilterManager extends FilterBuilder
     /**
      * @param string $relationName
      * @param Closure $callback
+     * @param string|null $valueKey
      * @return void
      */
-    public function addWhereHasFilter(string $relationName, Closure $callback): void
+    public function addWhereHasFilter(string $relationName, Closure $callback, string|null $valueKey = null): void
     {
+        $filterKey = $valueKey ?? $relationName;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('whereHas', [$relationName, $callback]);
     }
 
+    /**
+     * @param array $relations
+     * @return void
+     */
     public function addMultipleWhereHasFilter(array $relations): void
     {
-        foreach ($relations as $relation => $callback) {
-            $this->addWhereHasFilter($relation, $callback);
+        foreach ($relations as $relation => $relationData) {
+            $filterKey = $relationData[1] ?? $relation;
+            if ($this->canNotAddFilter($filterKey)) {
+                continue;
+            }
+            $this->addWhereHasFilter($relation, $relationData[0], $relationData[1] ?? null);
         }
     }
 
@@ -146,11 +182,16 @@ class FilterManager extends FilterBuilder
      * @param string $relationName
      * @param string|array $types
      * @param Closure|null $callback
+     * @param string|null $valueKey
      * @return void
      */
     public function addWhereHasMorphFilter(string $relationName, string|array $types = '*',
-                                           Closure|null $callback = null): void
+                                           Closure|null $callback = null, string|null $valueKey = null): void
     {
+        $filterKey = $valueKey ?? $relationName;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('whereHasMorph', [$relationName, $types, $callback]);
     }
 
@@ -162,6 +203,10 @@ class FilterManager extends FilterBuilder
      */
     public function addHasFilter(string $relationName, string $operator = '>=', string|null $valueKey = null): void
     {
+        $filterKey = $valueKey ?? $relationName;
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('has', [$relationName, $operator, $this->filtersData[$valueKey ?? $relationName]]);
     }
 
@@ -179,6 +224,10 @@ class FilterManager extends FilterBuilder
             } else {
                 $relation = $index;
                 $valueKey = $value;
+            }
+            $filterKey = $valueKey ?? $relation;
+            if ($this->canNotAddFilter($filterKey)) {
+                continue;
             }
             $this->addHasFilter($relation, $operator, $valueKey);
         }
@@ -234,19 +283,14 @@ class FilterManager extends FilterBuilder
 
     /**
      * @param Closure $callback
+     * @param string $filterKey
      * @return void
      */
-    public function addWhereFunctionFilter(Closure $callback): void
+    public function addWhereFunctionFilter(Closure $callback, string $filterKey): void
     {
-        $this->buildFilter('whereFunction', $callback);
-    }
-
-    /**
-     * @param Closure $callback
-     * @return void
-     */
-    public function addCollectionFunctionFilter(Closure $callback): void
-    {
+        if ($this->canNotAddFilter($filterKey)) {
+            return;
+        }
         $this->buildFilter('whereFunction', $callback);
     }
 }

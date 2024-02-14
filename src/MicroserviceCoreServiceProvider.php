@@ -13,6 +13,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../config/ddconfig.php' => $this->app->configPath('ddconfig.php'),
             __DIR__ . '/../config/excel.php' => $this->app->configPath('excel.php'),
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
+            __DIR__ . '/../config/snappy.php' => $this->app->configPath('snappy.php'),
         ], 'dd-config');
         Artisan::call("vendor:publish --tag=dd-config --force");
         $this->publishes([
@@ -24,7 +25,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $ddConfig = require __DIR__ . '/../config/ddconfig.php';
+        $ddConfig = require_once __DIR__ . '/../config/ddconfig.php';
         config([
             'logging.channels' => $ddConfig['logging.channels'],
             'database.redis' => $ddConfig['database.redis'],

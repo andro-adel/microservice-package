@@ -3,8 +3,10 @@
 namespace DD\MicroserviceCore\Classes;
 
 use DD\MicroserviceCore\Enums\HttpRequestStatusEnum;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class ApiResponses
 {
@@ -193,26 +195,45 @@ class ApiResponses
 
     /**
      * server error response
-     * @param string|int $error_code
-     * @param string $file
-     * @param string|int $line
+     * @param string|int $errorCode
      * @param string|null $message
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function serverErrorResponse(string|int $error_code, string $file, string|int $line,
-                                        string|null $message = null, array $additionData = []): JsonResponse
+    public static function serverErrorResponse(string|int  $errorCode, string|null $message = null,
+                                               array $additionData = []): JsonResponse
     {
-        return self::response([
+        $message = $message ?? __('response_messages.server_error');
+        $responseData = [
             'success' => false,
             'type' => 'error',
             'reason' => 'Exceptions',
-            'message' => $message ?? __('response_messages.server_error'),
-            'error_code' => $error_code,
-            'file' => $file,
-            'line' => $line,
+            'message' => $message,
+            'error_code' => $errorCode,
             ...$additionData
-        ], HttpRequestStatusEnum::STATUS_SERVER_ERROR);
+        ];
+        Log::error($message, $responseData);
+        return self::response($responseData, HttpRequestStatusEnum::STATUS_SERVER_ERROR);
+    }
+
+    /**
+     * @param LengthAwarePaginator $data
+     * @param string $reason
+     * @param string|null $message
+     * @param array $additionData
+     * @return JsonResponse
+     */
+    public static function successPaginationResponse(LengthAwarePaginator $data, string $reason = 'Show',
+                                                     string|null $message = null, array $additionData = [])
+    : JsonResponse
+    {
+        $paginationData = $data->toArray();
+        $data = $paginationData['data'];
+        unset($paginationData['data']);
+        return self::successResponse($data, $reason, $message, [
+            'meta' => $paginationData,
+            ...$additionData
+        ]);
     }
 
     /**

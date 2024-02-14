@@ -1,16 +1,16 @@
 <?php
 
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Response;
 use JetBrains\PhpStorm\ArrayShape;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 if (!function_exists('paginateCollection')) {
@@ -23,7 +23,7 @@ if (!function_exists('paginateCollection')) {
      * @return Collection|LengthAwarePaginator
      */
     function paginateCollection(Relation|Builder|Collection|array $data, string|int|null $pageSize = null,
-                                string|int|null                   $pageNumber = null): Collection|LengthAwarePaginator
+                                string|int|null $pageNumber = null): Collection|LengthAwarePaginator
     {
         $paginate = (bool)$pageSize || $pageNumber;
 
@@ -50,68 +50,6 @@ if (!function_exists('paginateCollection')) {
             }
         }
         return $data;
-    }
-}
-
-
-if (!function_exists('filterCollection')) {
-    /**
-     * @param Relation|Builder|Collection|array $data
-     * @param array $filtersObjects
-     * @return array|Relation|Builder
-     */
-    function filterCollection(Relation|Builder|Collection|array $data, array $filtersObjects): array|Relation|Builder
-    {
-        $isCollection = true;
-        if ($data instanceof Relation || $data instanceof Builder) {
-            $isCollection = false;
-        }
-        $collection = is_array($data) ? collect($data) : $data;
-
-        foreach ($filtersObjects as $filterType => $filters) {
-            switch ($filterType) {
-                case 'whereIn':
-                case 'whereNotIn':
-                case 'whereBetween':
-                case 'whereNotBetween':
-                case 'whereHas':
-                    if ($isCollection && in_array($filterType, ['whereHas'])) {
-                        break;
-                    }
-                    foreach ($filters as $filter) {
-                        $collection = $collection->$filterType($filter[0], $filter[1]);
-                    }
-                    break;
-                case 'whereHasMorph':
-                    if ($isCollection) {
-                        break;
-                    }
-                    foreach ($filters as $filter) {
-                        $collection = $collection->$filterType($filter[0], $filter[1] ?? '*', $filter[2] ?? null);
-                    }
-                    break;
-                case 'has':
-                    if ($isCollection) {
-                        break;
-                    }
-                    foreach ($filters as $filter) {
-                        $collection = $collection->$filterType($filter[0], $filter[1] ?? '>=', $filter[2] ?? 1);
-                    }
-                    break;
-                case 'where':
-                    if ($isCollection) {
-                        foreach ($filters as $filter) {
-                            $collection = $collection->$filterType(...$filter);
-                        }
-                        break;
-                    }
-                    $collection = $collection->$filterType($filters);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return $isCollection ? array_values($collection->toArray()) : $collection;
     }
 }
 
@@ -160,16 +98,16 @@ if (!function_exists('searchCollection')) {
 if (!function_exists('exportCollection')) {
     /**
      * @param array|Collection $data
-     * @param string|null $fileName
+     * @param string $fileName
      * @param string|null $writerType
      * @param bool $headings
      * @return void
      */
-    function exportCollection(array|Collection $data, string|null $fileName = null, string $writerType = null,
+    function exportCollectionExcel(array|Collection $data, string $fileName = 'document', string $writerType = null,
                               bool $headings = true): void
     {
         $collection = is_array($data) ? collect($data) : $data;
-        $collection->downloadExcel(Carbon::now()->timestamp . $fileName . '.xlsx', $writerType, $headings);
+        $collection->downloadExcel(Carbon::now()->timestamp . "_$fileName.xlsx", $writerType, $headings);
     }
 }
 
@@ -212,25 +150,30 @@ if (!function_exists('importCollection')) {
     }
 }
 
-if (!function_exists('exportCollectionPDF')) {
+if (!function_exists('streamCollectionPDF')) {
     /**
-     * @param $data
+     * @param array $data
      * @param string $templateView
-     * @param string|null $fileName
-     * @return BinaryFileResponse
+     * @param string $fileName
+     * @return StreamedResponse
      */
-    function exportCollectionPDF($data, string $templateView, string|null $fileName = null): BinaryFileResponse
+    function streamCollectionPDF(array $data, string $templateView, string $fileName = 'document'): StreamedResponse
     {
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view($templateView, compact($data))->render());
-        $dompdf->render();
-        $dompdf->stream($fileName ?? 'filename.pdf');
-        $output = $dompdf->output();
-        $filePath = public_path($fileName);
-        file_put_contents($filePath, $output);
-        return Response::download($filePath);
+        $pdf = SnappyPdf::loadView($templateView, $data);
+        return $pdf->stream(Carbon::now()->timestamp . "_$fileName.pdf");
+    }
+}
 
-        // $pdf = Dompdf::loadHtml(view($template, compact($data)))->setPaper('a4');
-        // return $dompdf->download($fileName ?? 'filename.pdf');
+if (!function_exists('downloadCollectionPDF')) {
+    /**
+     * @param array $data
+     * @param string $templateView
+     * @param string $fileName
+     * @return Response
+     */
+    function downloadCollectionPDF(array $data, string $templateView, string $fileName = 'document'): Response
+    {
+        $pdf = SnappyPdf::loadView($templateView, $data);
+        return $pdf->download(Carbon::now()->timestamp . "_$fileName.pdf");
     }
 }

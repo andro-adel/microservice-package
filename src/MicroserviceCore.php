@@ -6,5 +6,6 @@ class MicroserviceCore
 {
     public static function setup()
     {
+        // setup the package
     }
 }
