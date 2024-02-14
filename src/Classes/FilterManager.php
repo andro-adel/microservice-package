@@ -49,8 +49,12 @@ class FilterManager extends FilterBuilder
         if ($this->canNotAddFilter($filterKey)) {
             return;
         }
-        $this->buildFilter('where', [$column, $operator,
-            ...($this->filtersData[$valueKey ?? $column]? [$this->filtersData[$filterKey]] : [])]);
+        $value = $this->filtersData[$filterKey];
+
+        if (strtolower($operator) === 'like') {
+            $value = '%' . $value . '%';
+        }
+        $this->buildFilter('where', [$column, $operator, $value]);
     }
 
     /**
@@ -87,7 +91,7 @@ class FilterManager extends FilterBuilder
         if ($this->canNotAddFilter($filterKey)) {
             return;
         }
-        $this->buildFilter('whereIn', [$column, $this->filtersData[$valuesKey ?? $column]]);
+        $this->buildFilter('whereIn', [$column, $this->filtersData[$filterKey]]);
     }
 
     /**
@@ -123,7 +127,7 @@ class FilterManager extends FilterBuilder
         if ($this->canNotAddFilter($filterKey)) {
             return;
         }
-        $this->buildFilter('whereNotIn', [$column, $this->filtersData[$valuesKeys ?? $column]]);
+        $this->buildFilter('whereNotIn', [$column, $this->filtersData[$filterKey]]);
     }
 
     /**
@@ -207,7 +211,7 @@ class FilterManager extends FilterBuilder
         if ($this->canNotAddFilter($filterKey)) {
             return;
         }
-        $this->buildFilter('has', [$relationName, $operator, $this->filtersData[$valueKey ?? $relationName]]);
+        $this->buildFilter('has', [$relationName, $operator, $this->filtersData[$filterKey]]);
     }
 
     /**

@@ -58,6 +58,9 @@ class FilterBuilder
     {
         if ($isCollection) {
             foreach ($filters as $filter) {
+                if (count($filter) == 3 && strtolower($filter[1]) === 'like') {
+                    continue;
+                }
                 $collection = $collection->where(...$filter);
             }
         } else {
