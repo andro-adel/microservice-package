@@ -74,11 +74,12 @@ class FilterBuilder
      * @param bool $isCollection
      * @return void
      */
-    protected function applyingWhereFunction(array $filters, Relation|Builder|Collection &$collection,
-                                             bool $isCollection): void
-    {
-        foreach ($filters as $filter)
-        {
+    protected function applyingWhereFunction(
+        array $filters,
+        Relation|Builder|Collection &$collection,
+        bool $isCollection
+    ): void {
+        foreach ($filters as $filter) {
             if ($isCollection) {
                 $collection = $collection->filter($filter);
             } else {
@@ -94,9 +95,12 @@ class FilterBuilder
      * @param bool $isCollection
      * @return void
      */
-    protected function applyingDefaultCase(string $filterType, array $filters, Relation|Builder|Collection &$collection,
-                                         bool $isCollection): void
-    {
+    protected function applyingDefaultCase(
+        string $filterType,
+        array $filters,
+        Relation|Builder|Collection &$collection,
+        bool $isCollection
+    ): void {
         if ($isCollection && in_array($filterType, ['whereHas', 'has', 'whereHasMorph'])) {
             return;
         }
@@ -140,9 +144,11 @@ class FilterBuilder
      * @param Closure|null $callback
      * @return array|null
      */
-    protected function buildWhereBetweenFilter(string $column, array|string|null $valuesKeys = null,
-                                             Closure|null $callback = null): array|null
-    {
+    protected function buildWhereBetweenFilter(
+        string $column,
+        array|string|null $valuesKeys = null,
+        Closure|null $callback = null
+    ): array|null {
         if ($valuesKeys) {
             $values = [
                 $this->filtersData[$valuesKeys[0]],

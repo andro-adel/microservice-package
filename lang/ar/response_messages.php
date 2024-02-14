@@ -11,4 +11,4 @@ return [
     'inputs_not_valid' => 'المدخلات غير صالحة',
     'server_error' => 'خطأ في الخادم',
     'created_successfully' => 'تم الإنشاء بنجاح',
- ];
+];

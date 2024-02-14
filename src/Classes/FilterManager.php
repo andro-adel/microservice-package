@@ -189,9 +189,12 @@ class FilterManager extends FilterBuilder
      * @param string|null $valueKey
      * @return void
      */
-    public function addWhereHasMorphFilter(string $relationName, string|array $types = '*',
-                                           Closure|null $callback = null, string|null $valueKey = null): void
-    {
+    public function addWhereHasMorphFilter(
+        string $relationName,
+        string|array $types = '*',
+        Closure|null $callback = null,
+        string|null $valueKey = null
+    ): void {
         $filterKey = $valueKey ?? $relationName;
         if ($this->canNotAddFilter($filterKey)) {
             return;
@@ -243,9 +246,11 @@ class FilterManager extends FilterBuilder
      * @param Closure|null $callback
      * @return void
      */
-    public function addWhereBetweenFilter(string $column, array|string|null $valuesKeys = null,
-                                          Closure|null $callback = null): void
-    {
+    public function addWhereBetweenFilter(
+        string $column,
+        array|string|null $valuesKeys = null,
+        Closure|null $callback = null
+    ): void {
         if (!$valuesKeys && !$callback) {
             return;
         }
@@ -267,9 +272,11 @@ class FilterManager extends FilterBuilder
      * @param Closure|null $callback
      * @return void
      */
-    public function addWhereNotBetweenFilter(string $column, array|string|null $valuesKeys = null,
-                                             Closure|null $callback = null): void
-    {
+    public function addWhereNotBetweenFilter(
+        string $column,
+        array|string|null $valuesKeys = null,
+        Closure|null $callback = null
+    ): void {
         if (!$valuesKeys && !$callback) {
             return;
         }

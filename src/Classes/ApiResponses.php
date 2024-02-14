@@ -31,11 +31,13 @@ class ApiResponses
      * @param HttpRequestStatusEnum $status
      * @return JsonResponse
      */
-    public static function successResponse(array $data, string $reason, string|null $message = null,
-                                           array $additionData = [],
-                                           HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_OK)
-    : JsonResponse
-    {
+    public static function successResponse(
+        array $data,
+        string $reason,
+        string|null $message = null,
+        array $additionData = [],
+        HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_OK
+    ): JsonResponse {
         return self::response([
             'success' => true,
             'type' => 'success',
@@ -61,9 +63,11 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function notModifiedResponse(string|null $resourceName = null, string|null $message = null,
-                                        array $additionData = []): JsonResponse
-    {
+    public static function notModifiedResponse(
+        string|null $resourceName = null,
+        string|null $message = null,
+        array $additionData = []
+    ): JsonResponse {
         return self::response([
             'success' => false,
             'type' => 'error',
@@ -81,10 +85,11 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function badRequestResponse(string|null $message = null, array $additionData = [],
-                                       HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_BAD_REQUEST)
-    : JsonResponse
-    {
+    public static function badRequestResponse(
+        string|null $message = null,
+        array $additionData = [],
+        HttpRequestStatusEnum $status = HttpRequestStatusEnum::STATUS_BAD_REQUEST
+    ): JsonResponse {
         return self::response([
             'success' => false,
             'type' => 'error',
@@ -125,7 +130,7 @@ class ApiResponses
             'reason' => 'Unauthenticated',
             'message' => $message ?? __('response_messages.unauthenticated'),
             ...$additionData
-        ], HttpRequestStatusEnum::STATUS_FORBIDDEN);
+        ], HttpRequestStatusEnum::STATUS_UNAUTHENTICATED);
     }
 
     /**
@@ -135,9 +140,11 @@ class ApiResponses
      * @param string|null $message
      * @return JsonResponse
      */
-    public static function notFoundResponse(string|null $resourceName = null, string|null $message = null,
-                                     array $additionData = []): JsonResponse
-    {
+    public static function notFoundResponse(
+        string|null $resourceName = null,
+        string|null $message = null,
+        array $additionData = []
+    ): JsonResponse {
         return self::response([
             'success' => false,
             'type' => 'error',
@@ -157,10 +164,13 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function conflictsResponse(string $type, array $data, string|null $resourceName = null,
-                                      string|null $message = null, array $additionData = [])
-    : JsonResponse
-    {
+    public static function conflictsResponse(
+        string $type,
+        array $data,
+        string|null $resourceName = null,
+        string|null $message = null,
+        array $additionData = []
+    ): JsonResponse {
         return self::response([
             'success' => false,
             'type' => $type,
@@ -180,8 +190,7 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function notValidResponse(array $errors, string|null $message = null, array $additionData = [])
-    : JsonResponse
+    public static function notValidResponse(array $errors, string|null $message = null, array $additionData = []): JsonResponse
     {
         return self::response([
             'success' => false,
@@ -200,9 +209,11 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function serverErrorResponse(string|int  $errorCode, string|null $message = null,
-                                               array $additionData = []): JsonResponse
-    {
+    public static function serverErrorResponse(
+        string|int  $errorCode,
+        string|null $message = null,
+        array $additionData = []
+    ): JsonResponse {
         $message = $message ?? __('response_messages.server_error');
         $responseData = [
             'success' => false,
@@ -223,10 +234,12 @@ class ApiResponses
      * @param array $additionData
      * @return JsonResponse
      */
-    public static function successPaginationResponse(LengthAwarePaginator $data, string $reason = 'Show',
-                                                     string|null $message = null, array $additionData = [])
-    : JsonResponse
-    {
+    public static function successPaginationResponse(
+        LengthAwarePaginator $data,
+        string $reason = 'Show',
+        string|null $message = null,
+        array $additionData = []
+    ): JsonResponse {
         $paginationData = $data->toArray();
         $data = $paginationData['data'];
         unset($paginationData['data']);
@@ -269,13 +282,20 @@ class ApiResponses
      * @param string|null $message
      * @return JsonResponse
      */
-    public static function createdSuccessfullyResponse($data = null, string|null $resourceName = null,
-                                                ?string $message = null): JsonResponse
-    {
+    public static function createdSuccessfullyResponse(
+        $data = null,
+        string|null $resourceName = null,
+        ?string $message = null
+    ): JsonResponse {
         $message = $message ??
             (($resourceName ?? __('response_messages.default_resource_name'))
                 . ' ' . __('response_messages.created_successfully'));
-        return self::successResponse($data, 'Create',
-            $message, [], HttpRequestStatusEnum::STATUS_CREATED);
+        return self::successResponse(
+            $data,
+            'Create',
+            $message,
+            [],
+            HttpRequestStatusEnum::STATUS_CREATED
+        );
     }
 }

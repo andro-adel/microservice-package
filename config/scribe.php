@@ -125,7 +125,7 @@ return [
 
         // Any extra authentication-related info for your users. Markdown and HTML are supported.
         'extra_info' =>
-            'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
     ],
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
@@ -135,8 +135,7 @@ This documentation aims to provide all the information you need to work with our
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark
  area to the right (or as part of the content on mobile). You can switch the language used with the tabs at the top
  right (or from the nav menu at the top left on mobile).</aside>
-INTRO
-    ,
+INTRO,
 
     // Example requests for each endpoint will be shown in each of these languages.
     // Supported options are: bash, javascript, php, python

@@ -22,9 +22,11 @@ if (!function_exists('paginateCollection')) {
      * @param string|int|null $pageNumber
      * @return Collection|LengthAwarePaginator
      */
-    function paginateCollection(Relation|Builder|Collection|array $data, string|int|null $pageSize = null,
-                                string|int|null $pageNumber = null): Collection|LengthAwarePaginator
-    {
+    function paginateCollection(
+        Relation|Builder|Collection|array $data,
+        string|int|null $pageSize = null,
+        string|int|null $pageNumber = null
+    ): Collection|LengthAwarePaginator {
         $paginate = (bool)$pageSize || $pageNumber;
 
         if ($paginate) {
@@ -60,8 +62,7 @@ if (!function_exists('searchCollection')) {
      * @param array $fields
      * @return array|Relation|Builder
      */
-    function searchCollection(string $query, Relation|Builder|Collection|array $data, array $fields)
-    : array|Relation|Builder
+    function searchCollection(string $query, Relation|Builder|Collection|array $data, array $fields): array|Relation|Builder
     {
         $isCollection = true;
         if ($data instanceof Relation || $data instanceof Builder) {
@@ -103,9 +104,12 @@ if (!function_exists('exportCollection')) {
      * @param bool $headings
      * @return void
      */
-    function exportCollectionExcel(array|Collection $data, string $fileName = 'document', string $writerType = null,
-                              bool $headings = true): void
-    {
+    function exportCollectionExcel(
+        array|Collection $data,
+        string $fileName = 'document',
+        string $writerType = null,
+        bool $headings = true
+    ): void {
         $collection = is_array($data) ? collect($data) : $data;
         $collection->downloadExcel(Carbon::now()->timestamp . "_$fileName.xlsx", $writerType, $headings);
     }

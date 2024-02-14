@@ -11,4 +11,4 @@ return [
     'inputs_not_valid' => 'Inputs not valid',
     'server_error' => 'Server error',
     'created_successfully' => 'created successfully'
- ];
+];
