@@ -14,8 +14,6 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../config/excel.php' => $this->app->configPath('excel.php'),
             __DIR__ . '/../config/scribe.php' => $this->app->configPath('scribe.php'),
             __DIR__ . '/../config/snappy.php' => $this->app->configPath('snappy.php'),
-            __DIR__ . '/../tests' => base_path(),
-            __DIR__ . '/../phpunit.xml' => base_path(),
         ], 'dd-config');
         Artisan::call("vendor:publish --tag=dd-config --force");
         $this->publishes([
@@ -23,6 +21,11 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../lang/ar/response_messages.php' => $this->app->langPath('ar/response_messages.php'),
         ], 'dd-lang');
         Artisan::call("vendor:publish --tag=dd-lang --force");
+        $this->publishes([
+            __DIR__ . '/../tests' => $this->app->basePath('tests'),
+            __DIR__ . '/../phpunit.xml' => $this->app->basePath('phpunit.xml'),
+        ], 'dd-tests');
+        Artisan::call("vendor:publish --tag=dd-tests --force");
     }
 
     public function register()
