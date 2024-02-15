@@ -28,7 +28,8 @@ class Caching
      */
     public function set(string $key, mixed $value, SetOptions|null $opt = null): mixed
     {
-        return Redis::set($key, serialize($value), ...($opt ? $opt->getOptions() : []));
+        return Redis::set($key, serialize($value),
+            ...($opt ? $opt->getOptions() : $opt->setExpiration(60 * 60)->getOptions()));
     }
 
     /**
