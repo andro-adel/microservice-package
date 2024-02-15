@@ -16,7 +16,7 @@
         "h4cc/wkhtmltopdf-amd64": "0.12.x"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5"
+        "pestphp/pest": "^2.33"
     },
     "autoload": {
         "psr-4": {
