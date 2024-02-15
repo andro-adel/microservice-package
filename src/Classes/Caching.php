@@ -15,7 +15,7 @@ class Caching
         $this->changeConnection($connectionName);
     }
 
-    public function changeConnection(string $connectionName): void
+    public function changeConnection(string|null $connectionName): void
     {
         $this->redis = Redis::connection($connectionName);
     }
@@ -28,7 +28,7 @@ class Caching
      */
     public function set(string $key, mixed $value, SetOptions|null $opt = null): mixed
     {
-        return $this->redis->set($key, $value, ...($opt ? $opt->getOptions() : []));
+        return Redis::set($key, serialize($value), ...($opt ? $opt->getOptions() : []));
     }
 
     /**
@@ -40,9 +40,9 @@ class Caching
         $data = [];
         foreach ($values as $key => $value) {
             $data[] = $key;
-            $data[] = $value;
+            $data[] = serialize($value);
         }
-        return $this->redis->mset($data)->getPayload();
+        return $this->redis->mset(...$data)->getPayload();
     }
 
     /**
@@ -52,9 +52,14 @@ class Caching
     public function get(string|array $key): mixed
     {
         if (is_array($key)) {
-            return $this->redis->mget($key);
+            $data = [];
+            foreach ($this->redis->mget($key) as $value) {
+                $data[] = $value ? unserialize($value) : null;
+            }
+            return $data;
         } else {
-            return $this->redis->get($key);
+            $data = $this->redis->get($key);
+            return $data ? unserialize($data) : null;
         }
     }
 
