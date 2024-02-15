@@ -2,7 +2,7 @@
     "name": "dd/microservice-core",
     "description": "initialize packages required for logging , messaging with rabbitmq , redis caching",
     "type": "libraries",
-    "version": "0.1.29",
+    "version": "0.1.30",
     "license": "MIT",
     "require": {
         "itspire/monolog-loki": "^2.1",
@@ -13,10 +13,11 @@
         "knuckleswtf/scribe": "^4.29",
         "maatwebsite/excel": "^3.1",
         "barryvdh/laravel-snappy": "^1.0",
-        "h4cc/wkhtmltopdf-amd64": "0.12.x"
+        "h4cc/wkhtmltopdf-amd64": "0.12.x",
+        "pestphp/pest": "^2.33"
     },
     "require-dev": {
-        "pestphp/pest": "^2.33"
+        "phpunit/phpunit": "^10.1"
     },
     "autoload": {
         "psr-4": {
