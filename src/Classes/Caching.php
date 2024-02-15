@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Redis\Connections\Connection;
 use Closure;
 
-class Caching extends CachingOptions
+class Caching
 {
     private Connection $redis;
 
@@ -23,12 +23,12 @@ class Caching extends CachingOptions
     /**
      * @param string $key
      * @param mixed $value
-     * @param CachingOptions|null $opt
+     * @param SetOptions|null $opt
      * @return mixed
      */
-    public function set(string $key, mixed $value, CachingOptions|null $opt = null): mixed
+    public function set(string $key, mixed $value, SetOptions|null $opt = null): mixed
     {
-        return $this->redis->set($key, $value, ...($opt ? $opt->getSetOptions() : []));
+        return $this->redis->set($key, $value, ...($opt ? $opt->getOptions() : []));
     }
 
     /**
@@ -103,12 +103,12 @@ class Caching extends CachingOptions
     /**
      * @param string $key
      * @param int $ttl
-     * @param CachingOptions|null $opt
+     * @param ExpireOptions|null $opt
      * @return bool
      */
-    public function setExpire(string $key, int $ttl, CachingOptions|null $opt = null): bool
+    public function setExpire(string $key, int $ttl, ExpireOptions|null $opt = null): bool
     {
-        return $this->redis->expire($key, $ttl, ...($opt ? $opt->getSetOptions() : []));
+        return $this->redis->expire($key, $ttl, ...($opt ? $opt->getOptions() : []));
     }
 
     /**
