@@ -12,7 +12,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function emergency(string $message, array $context = [])
+    public static function emergency(string $message, array $context = []): void
     {
         Log::emergency($message, $context);
     }
@@ -23,7 +23,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function alert(string $message, array $context = [])
+    public static function alert(string $message, array $context = []): void
     {
         Log::alert($message, $context);
     }
@@ -34,7 +34,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function critical(string $message, array $context = [])
+    public static function critical(string $message, array $context = []): void
     {
         Log::critical($message, $context);
     }
@@ -45,7 +45,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function error(string $message, array $context = [])
+    public static function error(string $message, array $context = []): void
     {
         Log::error($message, $context);
     }
@@ -56,7 +56,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function warning(string $message, array $context = [])
+    public static function warning(string $message, array $context = []): void
     {
         Log::warning($message, $context);
     }
@@ -67,7 +67,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function notice(string $message, array $context = [])
+    public static function notice(string $message, array $context = []): void
     {
         Log::notice($message, $context);
     }
@@ -78,7 +78,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function info(string $message, array $context = [])
+    public static function info(string $message, array $context = []): void
     {
         Log::info($message, $context);
     }
@@ -89,7 +89,7 @@ class Logging
      * @param array $context
      * @return void
      */
-    public static function debug(string $message, array $context = [])
+    public static function debug(string $message, array $context = []): void
     {
         Log::debug($message, $context);
     }
