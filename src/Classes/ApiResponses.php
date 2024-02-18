@@ -93,7 +93,7 @@ class ApiResponses
         return self::response([
             'success' => false,
             'type' => 'error',
-            'reason' => 'General',
+            'reason' => 'Bad Request',
             'message' => $message,
             ...$additionData
         ], $status);
@@ -110,7 +110,7 @@ class ApiResponses
         return self::response([
             'success' => false,
             'type' => 'error',
-            'reason' => 'Permissions',
+            'reason' => 'Unauthorized',
             'message' => $message ?? __('response_messages.permission_denied'),
             ...$additionData
         ], HttpRequestStatusEnum::STATUS_UNAUTHORIZED);
