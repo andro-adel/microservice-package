@@ -4,6 +4,8 @@ namespace DD\MicroserviceCore;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
+use PHPUnit\Framework\Constraint\FileExists;
+use PHPUnit\Util\Filesystem;
 
 class MicroserviceCoreServiceProvider extends ServiceProvider
 {
