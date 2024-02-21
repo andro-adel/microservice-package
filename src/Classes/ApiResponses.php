@@ -59,6 +59,7 @@ class ApiResponses
 
     /**
      * resource not modified response
+     * @param string|null $resourceName
      * @param string|null $message
      * @param array $additionData
      * @return JsonResponse
@@ -83,6 +84,7 @@ class ApiResponses
      * bad request response
      * @param string|null $message
      * @param array $additionData
+     * @param HttpRequestStatusEnum $status
      * @return JsonResponse
      */
     public static function badRequestResponse(
@@ -160,6 +162,7 @@ class ApiResponses
      * conflict response
      * @param string $type
      * @param array $data
+     * @param string|null $resourceName
      * @param string|null $message
      * @param array $additionData
      * @return JsonResponse
@@ -280,6 +283,7 @@ class ApiResponses
     /**
      * created successfully response
      * @param $data
+     * @param string|null $resourceName
      * @param string|null $message
      * @return JsonResponse
      */
