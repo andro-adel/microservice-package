@@ -4,8 +4,6 @@ namespace DD\MicroserviceCore;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
-use PHPUnit\Framework\Constraint\FileExists;
-use PHPUnit\Util\Filesystem;
 
 class MicroserviceCoreServiceProvider extends ServiceProvider
 {
@@ -18,17 +16,17 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../config/snappy.php' => $this->app->configPath('snappy.php'),
             __DIR__ . '/../config/services-communication.php' => $this->app->configPath('services-communication.php'),
         ], 'dd-config');
-        Artisan::call("vendor:publish --tag=dd-config --force");
+        Artisan::call("vendor:publish --tag=dd-config");
         $this->publishes([
             __DIR__ . '/../lang/en/response_messages.php' => $this->app->langPath('en/response_messages.php'),
             __DIR__ . '/../lang/ar/response_messages.php' => $this->app->langPath('ar/response_messages.php'),
         ], 'dd-lang');
-        Artisan::call("vendor:publish --tag=dd-lang --force");
+        Artisan::call("vendor:publish --tag=dd-lang");
         $this->publishes([
             __DIR__ . '/../tests' => $this->app->basePath('tests'),
             __DIR__ . '/../phpunit.xml' => $this->app->basePath('phpunit.xml'),
         ], 'dd-tests');
-        Artisan::call("vendor:publish --tag=dd-tests --force");
+        Artisan::call("vendor:publish --tag=dd-tests");
     }
 
     public function register()

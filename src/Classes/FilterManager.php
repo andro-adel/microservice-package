@@ -3,6 +3,7 @@
 namespace DD\MicroserviceCore\Classes;
 
 use Closure;
+use DD\MicroserviceCore\Abstracts\FilterBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;

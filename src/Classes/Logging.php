@@ -7,6 +7,17 @@ use Illuminate\Support\Facades\Log;
 class Logging
 {
     /**
+     * Summary of logger
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     * @return void
+     */
+    private static function logger(string $level, string $message, array $context = [])
+    {
+        Log::$level($message, $context);
+    }
+    /**
      * Summary of emergency
      * @param string $message
      * @param array $context
@@ -14,7 +25,7 @@ class Logging
      */
     public static function emergency(string $message, array $context = []): void
     {
-        Log::emergency($message, $context);
+        self::logger('emergency', $message, $context);
     }
 
     /**
@@ -25,7 +36,7 @@ class Logging
      */
     public static function alert(string $message, array $context = []): void
     {
-        Log::alert($message, $context);
+        self::logger('alert', $message, $context);
     }
 
     /**
@@ -36,7 +47,7 @@ class Logging
      */
     public static function critical(string $message, array $context = []): void
     {
-        Log::critical($message, $context);
+        self::logger('critical', $message, $context);
     }
 
     /**
@@ -47,7 +58,7 @@ class Logging
      */
     public static function error(string $message, array $context = []): void
     {
-        Log::error($message, $context);
+        self::logger('error', $message, $context);
     }
 
     /**
@@ -58,7 +69,7 @@ class Logging
      */
     public static function warning(string $message, array $context = []): void
     {
-        Log::warning($message, $context);
+        self::logger('warning', $message, $context);
     }
 
     /**
@@ -69,7 +80,7 @@ class Logging
      */
     public static function notice(string $message, array $context = []): void
     {
-        Log::notice($message, $context);
+        self::logger('notice', $message, $context);
     }
 
     /**
@@ -80,7 +91,7 @@ class Logging
      */
     public static function info(string $message, array $context = []): void
     {
-        Log::info($message, $context);
+        self::logger('info', $message, $context);
     }
 
     /**
@@ -91,6 +102,6 @@ class Logging
      */
     public static function debug(string $message, array $context = []): void
     {
-        Log::debug($message, $context);
+        self::logger('debug', $message, $context);
     }
 }

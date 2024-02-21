@@ -1,13 +1,13 @@
 <?php
 
-namespace DD\MicroserviceCore\Classes;
+namespace DD\MicroserviceCore\Abstracts;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 
-class FilterBuilder
+abstract class FilterBuilder
 {
     protected array $filtersObject = [];
 
@@ -142,22 +142,32 @@ class FilterBuilder
      * @param string $column
      * @param array|string|null $valuesKeys
      * @param Closure|null $callback
-     * @return array|null
+     * @return array
      */
     protected function buildWhereBetweenFilter(
         string $column,
         array|string|null $valuesKeys = null,
         Closure|null $callback = null
-    ): array|null {
+    ): array {
         if ($valuesKeys) {
-            $values = [
-                $this->filtersData[$valuesKeys[0]],
-                $this->filtersData[$valuesKeys[1]]
-            ];
+            if (is_array($valuesKeys)) {
+                $values = [
+                    $this->filtersData[$valuesKeys[0]],
+                    $this->filtersData[$valuesKeys[1]]
+                ];
+            } else {
+                $values = [
+                    $this->filtersData[$valuesKeys][0],
+                    $this->filtersData[$valuesKeys][1]
+                ];
+            }
         } elseif ($callback) {
             $values = $callback($this->filtersData);
         } else {
-            return null;
+            $values = [
+                $this->filtersData[$column][0],
+                $this->filtersData[$column][1]
+            ];
         }
         return [$column, $values];
     }
@@ -169,11 +179,17 @@ class FilterBuilder
     protected function buildMultipleWhereBetweenFilter(array $data): array
     {
         $filtersArray = [];
-        foreach ($data as $column => $value) {
-            if (gettype($value) === 'string' || is_array($value)) {
+        foreach ($data as $index => $value) {
+            if (gettype($index) === 'integer') {
+                $column = $value;
+                $valuesKey = null;
+                $callback = null;
+            } elseif (gettype($value) === 'string' || is_array($value)) {
+                $column = $index;
                 $valuesKey = $value;
                 $callback = null;
             } else {
+                $column = $index;
                 $valuesKey = null;
                 $callback = $value;
             }
