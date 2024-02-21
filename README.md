@@ -158,6 +158,32 @@ You can install the package via composer:
 composer require andro-adel/microservice-package -W
 ```
 
+# Vendor Publish
+
+## Publish all the files
+
+```bash
+php artisan vendor:publish --provider="DD\MicroserviceCore\MicroserviceCoreServiceProvider"
+```
+
+## Publish the config files individually
+
+```bash
+php artisan vendor:publish --tag=dd-config
+```
+
+## Publish the lang files individually
+
+```bash
+php artisan vendor:publish --tag=dd-lang
+```
+
+## Publish the tests files individually
+
+```bash
+php artisan vendor:publish --tag=dd-tests
+```
+
 # Configuration
 
 This package will automatically publish the configuration files in the config folder upon installation, extending the project configuration from ddconfig.
