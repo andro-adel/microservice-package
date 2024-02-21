@@ -132,17 +132,17 @@ m-936 -17 c10 -27 7 -43 -13 -54 -11 -5 -26 -7 -35 -4 -21 8 -30 42 -16 59 16
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Package
+# About Package
 
 This is a laravel package to be used with each microservice to setup main packages and configurations.
 
-## Packages that will be installed
+# Packages that will be installed
 
 - [itspire/monolog-loki ^2.1](https://github.com/itspire/monolog-loki).
 - [monolog/monolog ^3.5](https://github.com/Seldaek/monolog).
 - [open-telemetry/opentelemetry-logger-monolog ^1.0](https://github.com/opentelemetry-php/contrib-logger-monolog).
 - [predis/predis ^2.2](https://github.com/predis/predis).
-- [vladimir-yuldashev/laravel-queue-rabbitmq ^13.3](https://github.com/vyuldashev/laravel-queue-rabbitmq) - [notion-documentation] (https://malleable-corn-f1b.notion.site/RabbitMQ-Installation-f74ae9ffdded481281e42d6e674fa516).
+- [vladimir-yuldashev/laravel-queue-rabbitmq ^13.3](https://github.com/vyuldashev/laravel-queue-rabbitmq) - [notion-documentation](https://malleable-corn-f1b.notion.site/RabbitMQ-Installation-f74ae9ffdded481281e42d6e674fa516).
 - [knuckleswtf/scribe ^4.29](https://scribe.knuckles.wtf/laravel/).
 - [maatwebsite/excel ^3.1](https://docs.laravel-excel.com/3.1/getting-started/).
 - [barryvdh/laravel-snappy ^1.0](https://github.com/barryvdh/laravel-snappy).
@@ -150,13 +150,14 @@ This is a laravel package to be used with each microservice to setup main packag
 - [pestphp/pest ^2.33](https://pestphp.com/docs/installation).
 - [phpunit/phpunit ^10.5](https://github.com/sebastianbergmann/phpunit).
 
-## Installation
+# Installation
 
 You can install the package via composer:
+```bash
+composer require andro-adel/microservice-package -W
+```
 
-    composer require andro-adel/microservice-package -W
-
-## Configuration
+# Configuration
 
 This package will automatically publish the configuration files in the config folder upon installation, extending the project configuration from ddconfig.
 and this files are:
@@ -167,17 +168,17 @@ and this files are:
 - services-communication.php - This file will be used to configure the services communication.
 - snappy.php - This file will be used to configure the downloading and streaming of PDF files.
 
-## Language
+# Language
 
 This package will automatically publish the language folder in the directory folder containing translations into Arabic and English.
 
-## Testing
+# Testing
 
 This package will automatically publish the tests folder in the directory folder containing the tests for the Pest package. and configure the phpunit.xml file to use the Pest package.
 
-## Usage
+# Usage
 
-### ApiResponses
+## ApiResponses
 
 This functions will be used by the microservice to return the response in a standard way.
 
@@ -185,57 +186,827 @@ This functions will be used by the microservice to return the response in a stan
 use DD\MicroserviceCore\Classes\ApiResponses;
 ```
 
-1. **success Response**
+### Success Response
 
 This function will be used to return a success response with the data, reason, message, additionData, status.
 
 ```php
-   ApiResponses::successResponse(array $data, string $reason, string|null $message = null, array $additionData = [], $status = 200)
+ApiResponses::successResponse(array $data, string $reason, string|null $message = null, array $additionData = [], $status = 200)
 ```
+example:
 
 ```php
-    example:
-        return ApiResponses::successResponse(data: ['user' => $user], reason: 'User retrieved successfully', additionData: ['extra' => 'extra value']);
+return ApiResponses::successResponse(data: ["user" : $user], reason: "User retrieved successfully", additionData: ["extra" : "extra value"]);
 ```
-
 ```json
 {
-    "status": 200,
-    "reason": "User retrieved successfully",
-    "message": null,
-    "data": {
-        "user": {
-            "id": 1,
-            "name": "John Doe",
-            "email": "
-        }
-    },
-    "additionData": {
-        "extra": "extra value"
-    }
+   "status": 200,
+   "success": true,
+   "type": "success",
+   "data": {
+      "user": {
+         "id": 1,
+         "name": "John Doe",
+         "email": "John@gmail.com"
+      }
+   },
+   "reason": "User retrieved successfully",
+   "message": "Done successfully",
+   "extra": "extra value"
 }
 ```
 
-2. **successNoContent Response**
+### Success No Content Response
 
 This function will be used to return a success response with no content.
 
 ```php
-    ApiResponses::successNoContentResponse()
+ApiResponses::successNoContentResponse()
 ```
+example:
+```php
+return ApiResponses::successNoContentResponse();
+```
+
+### Not Modified Response
+
+This function will be used to return a not modified response.
 
 ```php
-    example:
-        return ApiResponses::successNoContentResponse();
+ApiResponses::notModifiedResponse(string|null $resourceName = null,string|null $message = null,array $additionData = [])
 ```
-
+example:
+```php
+return ApiResponses::notModifiedResponse(resource: "User", message: "User not modified", additionData: ["extra" : "extra value"]);
+```
 ```json
 {
-    "status": 204,
-    "reason": "User deleted successfully",
-    "message": null,
-    "additionData": {
-        "extra": "extra value"
-    }
+   "status": 304,
+   "success": false,
+   "type": "error",
+   "reason": "Failure",
+   "message": "User not modified",
+   "extra": "extra value"
 }
+```
+
+### Bad Request Response
+
+This function will be used to return a bad request response.
+
+```php
+ApiResponses::badRequestResponse(string|null $message = null, array $additionData = [], $status = 400)
+```
+example:
+```php
+return ApiResponses::badRequestResponse(message: "Invalid data", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 400,
+   "success": false,
+   "type": "error",
+   "reason": "Bad Request",
+   "message": "Invalid data",
+   "extra": "extra value"
+}
+```
+
+### Unauthorized Response
+
+This function will be used to return an unauthorized response.
+
+```php
+ApiResponses::unauthorizedResponse(string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::unauthorizedResponse(message: "Unauthorized User", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 403,
+   "success": false,
+   "type": "error",
+   "reason": "Unauthorized",
+   "message": "Unauthorized User",
+   "extra": "extra value"
+}
+```
+
+### Unauthenticated Response
+
+This function will be used to return an unauthenticated response.
+
+```php
+ApiResponses::unauthenticatedResponse(string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::unauthenticatedResponse(message: "Unauthenticated User", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 401,
+   "success": false,
+   "type": "error",
+   "reason": "Unauthenticated",
+   "message": "Unauthenticated User",
+   "extra": "extra value"
+}
+```
+
+### Not Found Response
+
+This function will be used to return a not found response.
+
+```php
+ApiResponses::notFoundResponse(string|null $resourceName = null, string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::notFoundResponse(resource: "User", message: "User not found", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 404,
+   "success": false,
+   "type": "error",
+   "reason": "Not Found",
+   "message": "User not found",
+   "extra": "extra value"
+}
+```
+
+### Conflict Response
+
+This function will be used to return a conflict response.
+
+```php
+ApiResponses::conflictResponse(string $type,array $data,string|null $resourceName = null, string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::conflictResponse(type:"User",data: ["user" : $user], resourceName: "User", message: "User already exists", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 409,
+   "success": false,
+   "type": "User",
+   "data": {
+      "user": {
+         "id": 1,
+         "name": "John Doe",
+         "email": "John@gmail.com"
+      }
+   },
+   "reason": "Failure",
+   "message": "User already exists",
+   "extra": "extra value"
+}
+```
+
+### Not Valid Response
+
+This function will be used to return a not valid response.
+
+```php
+ApiResponses::notValidResponse(array $errors, array $data, string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::notValidResponse(errors: ["name" : "Name is required"], data: ["user" : $user], message: "Invalid data", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 422,
+   "success": false,
+   "type": "error",
+   "reason": "Validation",
+   "message": "Invalid data",
+   "errors": {
+      "name": "Name is required"
+   },
+   "data": {
+      "user": {
+         "id": 1,
+         "email": "john.doe@gmail.com"
+      }
+   },
+   "extra": "extra value"
+}
+```
+
+###  Server Error Response
+
+This function will be used to return a server error response.
+
+```php
+ApiResponses::serverErrorResponse(string|int  $errorCode,string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::serverErrorResponse(errorCode: 500, message: "Server error", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 500,
+   "success": false,
+   "type": "error",
+   "reason": "Exceptions",
+   "message": "Server error",
+   "errorCode": 500,
+   "extra": "extra value"
+}
+```
+
+### Success Pagination Response
+
+This function will be used to return a success pagination response.
+
+```php
+ApiResponses::successPaginationResponse(LengthAwarePaginator $data, string $reason = 'Show', string|null $message = null, array $additionData = [])
+```
+example:
+
+```php
+return ApiResponses::successPaginationResponse(data: $users, reason: "Users retrieved successfully", additionData: ["extra" : "extra value"]);
+```
+```json
+{
+   "status": 200,
+   "success": true,
+   "type": "success",
+   "data": {
+      "current_page": 1,
+      "data": [
+         {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john.doe@gmail.com"
+         },
+         {
+            "id": 2,
+            "name": "Jane Doe",
+            "email": "jane.doe@gmail.com"
+         },
+         {
+            "id": 3,
+            "name": "Ahmed",
+            "email": "ahmed@gmail.com"
+         }
+      ],
+      "first_page_url": "http://localhost:8000/api/users?page=1",
+      "from": 1,
+      "last_page": 1
+   },
+   "reason": "Users retrieved successfully",
+   "message": "Done successfully",
+   "extra": "extra value"
+}
+```
+
+### Success Show Pagination Response
+
+This function will be used to return a success show pagination response.
+
+```php
+ApiResponses::successShowPaginationResponse($data, $meta, string $reason = 'Show')
+```
+example:
+
+```php
+return ApiResponses::successShowPaginationResponse(data: $users, meta: $meta, reason: "Users retrieved successfully");
+```
+```json
+{
+   "status": 200,
+   "success": true,
+   "type": "success",
+   "data": {
+      "current_page": 1,
+      "data": [
+         {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john.doe@gmail.com",
+            "created_at": "2022-01-01T00:00:00.000000Z",
+            "updated_at": "2022-01-01T00:00:00.000000Z"
+         },
+         {
+            "id": 2,
+            "name": "ahmed Doe",
+            "email": "ahmed.doe@gmail.com",
+            "created_at": "2022-01-01T00:00:00.000000Z",
+            "updated_at": "2022-01-01T00:00:00.000000Z"
+         }
+      ],
+      "first_page_url": "http://localhost:8000/api/users?page=1",
+      "from": 1,
+      "last_page": 1
+      },
+      "reason": "Users retrieved successfully", 
+      "meta": {
+      "current_page": 1,
+      "from": 1,
+      "last_page": 1,
+      "path": "http://localhost:8000/api/users",
+      "per_page": 15,
+      "to": 2,
+      "total": 2
+   }
+}
+```
+
+### Success Show Paginated Data Response
+
+This function will be used to return a success show paginated data response.
+
+```php
+ApiResponses::successShowPaginatedDataResponse(JsonResource $data, string $reason = 'Show')
+```
+example:
+
+```php
+return ApiResponses::successShowPaginatedDataResponse(data: $users, reason: "Users retrieved successfully");
+```
+```json
+{
+   "status": 200,
+   "success": true,
+   "type": "success",
+   "data": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@gmail.com",
+      "created_at": "2022-01-01T00:00:00.000000Z",
+      "updated_at": "2022-01-01T00:00:00.000000Z"
+   },
+   "reason": "Users retrieved successfully",
+   "count": 1
+}
+```
+
+### Created Successfully Response
+
+This function will be used to return a created successfully response.
+
+```php
+ApiResponses::createdSuccessfullyResponse($data = null, string|null $resourceName = null,?string $message = null)
+```
+example:
+```php
+return ApiResponses::createdSuccessfullyResponse(data: ["user" : $user], resourceName: "User", message: "User created successfully");
+```
+```json
+{
+   "status": 201,
+   "success": true,
+   "type": "success",
+   "data": {
+      "user": {
+         "id": 1,
+         "name": "John Doe",
+         "email": "john.doe@gmail.com",
+         "created_at": "2022-01-01T00:00:00.000000Z",
+         "updated_at": "2022-01-01T00:00:00.000000Z"
+      }
+   },
+   "reason": "Created",
+   "message": "User created successfully"
+}
+```
+
+## Caching
+
+This functions will be used by the microservice to handle caching data.
+
+```php
+use DD\MicroserviceCore\Classes\Caching;
+```
+
+### Creating Object From Caching class
+
+- **Creating Object From Caching class**
+
+```php
+$caching = new Caching();
+```
+
+and you can change the default connection on object creation by passing the connection name to the constructor.
+
+```php
+$caching = new Caching('connection_name');
+```
+
+or you can change the default connection after object creation by using the setConnection function.
+
+```php
+$caching->setConnection('connection_name');
+```
+
+- **Injecting Caching class**
+
+```php
+public function __construct(protected readonly Caching $caching) {}
+```
+and you can change the default connection after object creation by using the setConnection function.
+
+```php
+$caching->setConnection('connection_name');
+```
+
+### Caching Functions
+- **Set Cache**
+```php
+$caching->set(string $key, mixed $value);
+```
+- **Set Cache With Options**
+```php
+use DD\MicroserviceCore\Classes\SetOptions;
+$options = new SetOptions();
+$options->setExpiration(int $ttl);
+$options->setExpirationTimestamp(string $timestamp);
+$options->setExpirationInMilliseconds(int $ttl);
+$options->setExpirationTimestampInMilliseconds(string $timestamp);
+$options->setExpirationSameAsOld();
+$options->returnOldValue();
+$options->setIfNew();
+$options->setIfExist();
+$caching->set(string $key, mixed $value, SetOptions $options);
+```
+- **Set Multiple Cache**
+```php
+$values = [
+   'key1' => 'value1',
+   'key2' => 'value2',
+   'key3' => 'value3',
+];
+$caching->setMany(array $values);
+```
+- **Get Cache**
+```php
+$caching->get(string|array $key);
+```
+- **Rename Key**
+```php
+$caching->rename(string $oldKey, string $newKey);
+```
+- **Delete Cache**
+```php
+$caching->delete(string|array $key);
+```
+- **Get Key Type**
+```php
+$caching->getType(string $key);
+```
+- **Set Expire**
+```php
+$caching->setExpire(string $key, int $ttl);
+```
+- **Set Expire With Options**
+```php
+use DD\MicroserviceCore\Classes\ExpireOptions;
+$options = new ExpireOptions();
+$options->setIfNew();
+$options->setIfExist();
+$options->setIfGreaterThanCurrent();
+$options->setIfLessThanCurrent();
+$caching->set(string $key, int $ttl, ExpireOptions $options);
+```
+- **Check If Cache Exists**
+```php
+$caching->isKeyExist(string|array $key);
+```
+- **Key Searching**
+```php
+$caching->keySearching(string $pattern);
+```
+- **Get All Keys**
+```php
+$caching->getAllKeys();
+```
+- **Run Set of commands together**
+```php
+$caching->transaction(Closure $callback);
+```
+- **Run Command**
+```php
+$caching->command(string $command, array $values);
+```
+## Filters
+
+This functions will be used by the microservice to handle filtering data.
+
+```php
+use DD\MicroserviceCore\Classes\FilterManager;
+```
+### Creating Object From FilterManager class
+
+- **Creating Object From FilterManager class**
+
+```php
+$filterManager = new FilterManager();
+```
+filters data is the data that will be used to apply filters.
+
+the default filters data will be set to the request data with key `filter`, and you can set filters data on object creation by passing the filters data to the constructor.
+
+```php
+$filterManager = new FilterManager(array $filtersData);
+```
+
+or you can set the filters data after object creation by using the setFiltersData function.
+
+```php
+$filterManager->setFiltersData(array $filtersData);
+```
+
+- **Injecting FilterManager class**
+
+```php
+public function __construct(protected readonly FilterManager $filterManager) {}
+```
+and you can set the filters data after object creation by using the setFiltersData function.
+
+```php
+$caching->setFiltersData(array $filtersData);
+```
+### Build Filters
+- **Add Where Filter**
+```php
+$filterManager->addWhereFilter(string $column);
+```
+by default the operator will be set to `=`, you can pass the operator to the function to apply the operator to the filter.
+
+```php
+$filterManager->addWhereFilter(string $column, string $operator);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the column name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addWhereFilter(string $column, string $operator, string $valueKey);
+```
+- **Add Where In Filter**
+```php
+$filterManager->addWhereInFilter(string $column);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the column name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addWhereInFilter(string $column, string $valueKey);
+```
+- **Add Where Not In Filter**
+```php
+$filterManager->addWhereNotInFilter(string $column);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the column name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addWhereNotInFilter(string $column, string $valueKey);
+```
+- **Add Where Has Filter**
+  **_[NOTE: you can't use this function with collection or array data.]_**
+```php
+$filterManager->addWhereHasFilter(string $relationName, Closure $callback);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the relation name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addWhereHasFilter(string $relationName, Closure $callback, string $valueKey);
+```
+- **Add Where Has Morph Filter**
+  **_[NOTE: you can't use this function with collection or array data.]_**
+```php
+$filterManager->addWhereHasMorphFilter(string $relationName, string|array $types, Closure $callback);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the relation name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addWhereHasMorphFilter(string $relationName, string|array $types, Closure $callback, string $valueKey);
+```
+- **Add Has Filter**
+  **_[NOTE: you can't use this function with collection or array data.]_**
+```php
+$filterManager->addHasFilter(string $relationName);
+```
+by default the operator will be set to `>=`, you can pass the operator to the function to apply the operator to the filter.
+
+```php
+$filterManager->addHasFilter(string $relationName, string $operator);
+```
+by default, when applying the filters the value for this where filter will be taken from the filters data with the same key as the column name, you can pass difference key to the function to apply the value to the filter.
+
+```php
+$filterManager->addHasFilter(string $relationName, string $operator, string $valueKey);
+```
+- **Add Where Between Filter**
+  there are four ways to use this function.
+    - **First way**
+   ```php
+   $filtersData = [
+        $column => ['value1','value2'],
+   ];
+   $filterManager->addWhereBetweenFilter(string $column);
+   ```
+    - **Second way**
+   ```php
+   $filtersData = [
+        $valueKey => ['value1','value2'],
+   ];
+   $filterManager->addWhereBetweenFilter(string $column, string $valueKey);
+   ```
+    - **Third way**
+   ```php
+   $filtersData = [
+      'valueKey1' => 'value1',
+      'valueKey2' => 'value2',
+   ];
+   $filterManager->addWhereBetweenFilter(string $column, ['valueKey1','valueKey2']);
+   ```
+    - **Forth way**
+      if you have a different logic to apply the where between filter you can pass a callback to the function to apply the logic to the filter.
+   ```php
+   $callback = function(): array {};
+   $filterManager->addWhereBetweenFilter(string $column, Closure $callback);
+   ```
+    - **Add Where Not Between Filter**
+      there are four ways to use this function.
+        - **First way**
+       ```php
+       $filtersData = [
+          $column => ['value1','value2'],
+       ];
+       $filterManager->addWhereBetweenFilter(string $column);
+       ```
+        - **Second way**
+       ```php
+       $filtersData = [
+          $valueKey => ['value1','value2'],
+       ];
+       $filterManager->addWhereBetweenFilter(string $column, string $valueKey);
+       ```
+        - **Third way**
+       ```php
+       $filtersData = [
+          'valueKey1' => 'value1',
+          'valueKey2' => 'value2',
+       ];
+       $filterManager->addWhereBetweenFilter(string $column, ['valueKey1','valueKey2']);
+       ```
+        - **Forth way**
+
+      if you have a different logic to apply the where between filter you can pass a callback to the function to apply the logic to the filter.
+       ```php
+       $callback = function(): array {};
+       $filterManager->addWhereBetweenFilter(string $column, Closure $callback);
+       ```
+- **Add Where Function Filter**
+```php
+$filterManager->addWhereFunctionFilter(Closure $callback, string $filterKey);
+```
+`$filterKey` is the key that will be used to check if this filter will be applied or not.
+- **Add Multiple Where Filter**
+```php
+$columns = [
+   'column1',
+   'column2' => 'valueKey',
+   'column3'
+];
+$filterManager->addMultipleWhereFilter(array $columns);
+```
+by default the operator will be set to `=`, you can pass the operator to the function to apply the operator to the filter.
+
+```php
+$filterManager->addMultipleWhereFilter(array $columns, string $operator);
+```
+- **Add Multiple Where In Filter**
+```php
+$columns = [
+   'column1',
+   'column2' => 'valueKey',
+   'column3'
+];
+$filterManager->addMultipleWhereInFilter(array $columns);
+```
+- **Add Multiple Where Not In Filter**
+```php
+$columns = [
+   'column1',
+   'column2' => 'valueKey',
+   'column3'
+];
+$filterManager->addMultipleWhereNotInFilter(array $columns);
+```
+- **Add Multiple Where Has Filter**
+  **_[NOTE: you can't use this function with collection or array data.]_**
+```php
+$relations = [
+   'relation1' => function($query){},
+   'relation2' => function($query){},
+   'relation3' => function($query){}
+];
+$filterManager->addMultipleWhereHasFilter(array $relations);
+```
+- **Add Multiple Has Filter**
+```php
+$relations = [
+   'relation1',
+   'relation2' => 'valueKey',
+   'relation3'
+];
+$filterManager->addMultipleHasFilter(array $relations);
+```
+by default the operator will be set to `>=`, you can pass the operator to the function to apply the operator to the filter.
+
+```php
+$filterManager->addMultipleHasFilter(array $relations, string $operator);
+```
+- **Add Multiple Where Between Filter**
+```php
+$data = [
+   'column1',
+   'column2' => 'valueKey',
+   'column3' => ['valueKey1', 'valueKey2'],
+   'column4' => functioin(): array {}
+];
+$filterManager->addMultipleWhereBetweenFilter(array $data);
+```
+- **Add Multiple Where Not Between Filter**
+```php
+$data = [
+   'column1',
+   'column2' => 'valueKey',
+   'column3' => ['valueKey1', 'valueKey2'],
+   'column4' => functioin(): array {}
+];
+$filterManager->addMultipleWhereNotBetweenFilter(array $data);
+```
+### Applying Filters
+
+Now you can simply call function `applyFilters` from `$filterManager` object.
+```php
+$filterManager->applyFilters(Relation|Builder|Collection|array &$data)
+```
+And your data will be filtered.
+
+#### Example
+
+```php
+use DD\MicroserviceCore\Classes\FilterManager;
+use DD\MicroserviceCore\Interfaces\ServiceInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
+
+class ModelService implements ServiceInterface
+{
+
+   /**
+   * @inheritDoc
+   */
+   public function applyFilters(Relation|Builder|array|Collection &$data, ?array $filtersData = null): void
+   {
+      $filterManager = new FilterManager($filtersData);
+      
+      $filterManager->addMultipleWhereFilter(['name', 'email' => 'mail'], 'LIKE');
+      $filterManager->addWhereInFilter('id');
+      
+      $filterManager->applyFilters($data);
+   }
+}
+```
+## Logging
+
+```php
+use DD\MicroserviceCore\Classes\Logging
+```
+
+### Logging Types
+- emergency
+- alert
+- critical
+- error
+- warning
+- notice
+- info
+- debug
+### Functions
+For each type there are an static function to handle it, all function have two parameters `string $message` and `array $context = []`.
+```php
+Logging::emergency(string $message, array $context);
+Logging::alert(string $message, array $context);
+Logging::critical(string $message, array $context);
+Logging::error(string $message, array $context);
+Logging::warning(string $message, array $context);
+Logging::notice(string $message, array $context);
+Logging::info(string $message, array $context);
+Logging::debug(string $message, array $context);
 ```
