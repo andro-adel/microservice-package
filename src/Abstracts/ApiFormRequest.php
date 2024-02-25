@@ -2,7 +2,7 @@
 
 namespace DD\MicroserviceCore\Abstracts;
 
-use App\Exceptions\CustomValidationException;
+use DD\MicroserviceCore\Abstracts\Exceptions\CustomValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
