@@ -19,10 +19,6 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
             __DIR__ . '/../lang/en/response_messages.php' => $this->app->langPath('en/response_messages.php'),
             __DIR__ . '/../lang/ar/response_messages.php' => $this->app->langPath('ar/response_messages.php'),
         ], 'dd-lang');
-        $this->publishes([
-            __DIR__ . '/../tests' => $this->app->basePath('tests'),
-            __DIR__ . '/../phpunit.xml' => $this->app->basePath('phpunit.xml'),
-        ], 'dd-tests');
     }
 
     public function register()

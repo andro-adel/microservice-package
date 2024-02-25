@@ -181,12 +181,12 @@ php artisan vendor:publish --tag=dd-lang
 ## Publish the tests files individually
 
 ```bash
-php artisan vendor:publish --tag=dd-tests
+./vendor/bin/pest --init
 ```
 
 # Configuration
 
-This package will automatically publish the configuration files in the config folder upon installation, extending the project configuration from ddconfig.
+This package has the configuration files in the config folder upon installation, extending the project configuration from ddconfig.
 and this files are:
 
 - ddconfig.php - This file will be used to configure the logging.channels and database.redis that will be used in the microservice.
@@ -194,14 +194,6 @@ and this files are:
 - scribe.php - This file will be used to configure the API documentation.
 - services-communication.php - This file will be used to configure the services communication.
 - snappy.php - This file will be used to configure the downloading and streaming of PDF files.
-
-# Language
-
-This package will automatically publish the language folder in the directory folder containing translations into Arabic and English.
-
-# Testing
-
-This package will automatically publish the tests folder in the directory folder containing the tests for the Pest package. and configure the phpunit.xml file to use the Pest package.
 
 # Usage
 
