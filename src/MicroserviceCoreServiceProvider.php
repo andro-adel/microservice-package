@@ -23,7 +23,7 @@ class MicroserviceCoreServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $ddConfig = require_once __DIR__ . '/../config/ddconfig.php';
+        $ddConfig = include __DIR__ . '/../config/ddconfig.php';
         config([
             'logging.channels' => $ddConfig['logging.channels'],
             'database.redis' => $ddConfig['database.redis'],

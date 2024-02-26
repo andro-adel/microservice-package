@@ -1159,3 +1159,13 @@ Logging::notice(string $message, array $context);
 Logging::info(string $message, array $context);
 Logging::debug(string $message, array $context);
 ```
+
+## Form Request
+
+extends the `DD\MicroserviceCore\Abstracts\ApiFormRequest` abstract class.
+
+```php
+use DD\MicroserviceCore\Abstracts\ApiFormRequest;
+class YourRequestForm extends ApiFormRequest
+{}
+```

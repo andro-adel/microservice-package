@@ -1,6 +1,6 @@
 <?php
 
-namespace DD\MicroserviceCore\Abstracts\Exceptions;
+namespace DD\MicroserviceCore\Exceptions;
 
 use DD\MicroserviceCore\Classes\ApiResponses;
 use Illuminate\Http\JsonResponse;
